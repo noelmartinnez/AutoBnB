@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8"/>
+    <title>Chat Arrendador</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+<div th:if="${usuario != null}">
+    <div th:replace="fragments :: navbar(userName=${usuario} ? ${usuario.getNombre()} : '',
+                         userId=${usuario} ? ${usuario.getId()} : '',
+                         admin=${usuario} ? ${usuario.isAdministrador()} : '',
+                         arrendador=${usuario} ? ${usuario.isEsArrendador()} : '',
+                         arrendatario=${usuario} ? ${usuario.isEsArrendatario()} : '')"></div>
+</div>
+
+<div th:if="${usuario == null}">
+    <div th:replace="fragments :: navbar_noLogueado"></div>
+</div>
+
+<main class="flex justify-center items-center mt-8 mb-8">
+    <section class="chat-section p-6 bg-white rounded-lg shadow-lg w-3/4 lg:w-1/2">
+        <h2 style="font-family: serif" class="text-2xl font-bold mb-4 text-center">Chat con <span th:text="${destinatarioNombre}"></span></h2>
+
+        <div class="chat-box overflow-y-auto h-64 mb-4 border rounded-lg p-4 bg-gray-50">
+            <div th:each="mensaje : ${mensajes}">
+        <span th:if="${mensaje.remitente.id} == ${usuario.id}" class="block p-2 mb-2 rounded shadow-md text-black bg-green-100">
+            <b th:text="${mensaje.remitente.nombre}"></b>: <span th:text="${mensaje.contenido}"></span>
+        </span>
+                <span th:unless="${mensaje.remitente.id} == ${usuario.id}" class="block p-2 mb-2 rounded shadow-md text-black bg-white">
+            <b th:text="${mensaje.remitente.nombre}"></b>: <span th:text="${mensaje.contenido}"></span>
+        </span>
+            </div>
+        </div>
+
+        <form id="chatForm" th:action="@{'/chat/arrendador/enviar'}" method="post" class="space-y-4">
+            <input type="hidden" name="remitenteId" th:value="${usuario.id}">
+            <input type="hidden" name="destinatarioId" th:value="${destinatarioId}">
+            <div>
+                <textarea id="messageInput" name="contenido" rows="3" class="w-full p-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" placeholder="Escribe tu mensaje aquí..." required></textarea>
+            </div>
+            <button style="font-family: serif" type="submit" class="btn w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-300">Enviar</button>
+        </form>
+        <p class="text-center mt-3" style="margin-top: 20px">
+            <a th:href="@{'/perfil/' + ${usuario.id} + '/vehiculos-alquilados'}" class="btn btn-link" style="color: #171a1d; font-family: serif">Volver al listado</a>
+        </p>
+    </section>
+</main>
+
+<div th:replace="fragments :: footer"></div>
+<div th:replace="fragments::javascript"/>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var chatBox = document.querySelector(".chat-box");
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        var messageInput = document.getElementById("messageInput");
+        var chatForm = document.getElementById("chatForm");
+
+        messageInput.addEventListener("keydown", function(event) {
+            if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault(); // Evita que se añada una nueva línea
+                chatForm.submit(); // Envía el formulario
+            }
+        });
+    });
+</script>
+</body>
+</html>

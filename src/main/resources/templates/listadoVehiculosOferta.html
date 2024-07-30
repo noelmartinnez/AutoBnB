@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Catálogo Vehículos Oferta')"></head>
+
+<body>
+<!-- Si el usuario está logueado, incluye el Navbar normal -->
+<div th:if="${usuario != null}">
+    <!-- Recuperamos el objeto "usuarios" que nos pasa el Controller y usamos sus atributos, pasandolos al NavBar -->
+    <div th:replace="fragments :: navbar(userName=${usuario} ? ${usuario.getNombre()} : '',
+                         userId=${usuario} ? ${usuario.getId()} : '',
+                         admin=${usuario} ? ${usuario.isAdministrador()} : '',
+                         arrendador=${usuario} ? ${usuario.isEsArrendador()} : '',
+                         arrendatario=${usuario} ? ${usuario.isEsArrendatario()} : '')"></div>
+</div>
+
+<!-- Si el usuario no está logueado, incluye el Navbar para no logueados -->
+<div th:if="${usuario == null}">
+    <div th:replace="fragments :: navbar_noLogueado"></div>
+</div>
+
+<main style="flex: 1;">
+    <section class="banner">
+        <h1 style="color: #171a1d; text-align: center; margin-bottom: 10px; margin-top: 30px; font-family: 'serif';">Ofertas</h1>
+    </section>
+
+    <!-- Sección de búsqueda -->
+    <section class="search-section py-4" style="border-top: 1px solid #eee; padding-top: 30px; font-family: serif">
+        <div class="catalogo-vehiculos" style="display: flex; justify-content: center; align-items: center;">
+            <form th:action="@{'/listado-vehiculos/ofertas'}" method="get" class="form-inline my-2 my-lg-0" style="flex-grow: 1; justify-content: center; max-width: 150px;">
+                <button type="submit" style="width: 100%; padding: 10px; background-color: #171a1d; color: white; border: none; cursor: pointer;" class="btn-reset">Reestablecer</button>
+            </form>
+
+            <form th:action="@{'/listado-vehiculos/ofertas/busqueda'}" method="get" th:object="${busquedaData}" class="form-inline my-2 my-lg-0" style="flex-grow: 1; justify-content: center; max-width: 200px; margin: 0 10px;">
+                <input id="busqueda" name="busqueda" class="input-busqueda" type="search" placeholder="Busqueda" aria-label="Search" style="width: 100%; border-radius: 20px; padding: 0.5rem 1rem;">
+            </form>
+
+            <form action="/listado-vehiculos/ofertas/filtrar-categoria" method="get" class="filter-form" style="display: flex; align-items: center;">
+                <select id="marca" name="marca" class="select-marca" style="border-radius: 0.25rem; border: 1px solid #ced4da; max-width: 150px; margin-right: 10px;">
+                    <option value="">Marca</option>
+                    <option th:each="marca : ${marcas}"
+                            th:value="${marca.nombre}"
+                            th:text="${marca.nombre}">Marca</option>
+                </select>
+
+                <select id="categoria" name="categoria" class="select-categoria" style="border-radius: 0.25rem; border: 1px solid #ced4da; max-width: 150px; margin-right: 10px;">
+                    <option value="">Categoria</option>
+                    <option th:each="categoria : ${categorias}"
+                            th:value="${categoria.nombre}"
+                            th:text="${categoria.nombre}">Categoría</option>
+                </select>
+
+                <select id="ciudad" name="ciudad" class="select-ciudad" style="border-radius: 0.25rem; border: 1px solid #ced4da; max-width: 150px; margin-right: 10px;">
+                    <option value="">Ciudad</option>
+                    <option th:each="ciudad : ${ciudades}" th:value="${ciudad}" th:text="${ciudad}">Ciudad</option>
+                </select>
+
+                <input type="number" id="precioMin" name="precioMin" placeholder="Precio Min" class="input-precio-min" style="margin-right: 10px;">
+                <input type="number" id="precioMax" name="precioMax" placeholder="Precio Max" class="input-precio-max" style="margin-right: 10px;">
+
+                <button type="submit" class="btn-filtrar" style="background-color: #81c784; color: white; border-radius: 0.25rem; padding: 0.5rem 1rem; border: none; cursor: pointer; margin-left: 10px;">Filtrar</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Listado de vehículos -->
+    <div class="container-fluid" style="margin-top: 30px; font-family: serif">
+        <div class="row mt-3" style="display: flex; flex-wrap: wrap; justify-content: space-around;">
+            <div th:each="vehiculo : ${vehiculosPage.content}" style="width: 18rem; margin: 1rem; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);">
+                <a th:href="@{/listado-vehiculos/detalles-vehiculo/oferta/{vehiculoId}(vehiculoId=${vehiculo.id})}">
+                    <img th:src="@{|/uploads/${vehiculo.imagen}|}" alt="Imagen del vehículo" style="width: 288px; height: 150px; object-fit: cover; display: block;">
+                </a>
+                <div style="text-align: center; padding: 1rem;">
+                    <h5 th:text="${vehiculo.marca.nombre} + ' ' + ${vehiculo.modelo.nombre}" style="margin-bottom: 0.5rem;"></h5>
+                    <div th:if="${vehiculo.oferta == null}">
+                        <span th:text="${vehiculo.getPrecioPorDiaSinDecimales()} + '€ / día'" style="font-size: 1rem; color: #555;"></span>
+                    </div>
+                    <div th:if="${vehiculo.oferta != null}" style="text-align: center;">
+                        <span style="text-decoration: line-through; color: #555; font-size: 1rem;" th:text="${vehiculo.getPrecioPorDiaSinDecimales()} + '€'"></span>
+                        <span style="font-size: 1rem;">
+                            <span style="color: red;" th:text="${preciosOferta[vehiculo.id]} + '€'"></span>
+                            <span style="color: #555;">/ día</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${cantidad != null}" class="d-flex justify-content-center" style="font-family: serif">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${vehiculosPage.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/listado-vehiculos/ofertas(page=${vehiculosPage.number - 1}, size=${vehiculosPage.size})}">Anterior</a>
+                </li>
+                <li th:each="pageNum : ${#numbers.sequence(0, vehiculosPage.totalPages - 1)}" class="page-item" th:classappend="${pageNum == vehiculosPage.number} ? 'active'">
+                    <a class="page-link" th:href="@{/listado-vehiculos/ofertas(page=${pageNum}, size=${vehiculosPage.size})}" th:text="${pageNum + 1}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${vehiculosPage.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/listado-vehiculos/ofertas(page=${vehiculosPage.number + 1}, size=${vehiculosPage.size})}">Siguiente</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</main>
+
+<div th:replace="fragments :: footer"></div>
+<div th:replace="fragments::javascript"/>
+</body>
+</html>

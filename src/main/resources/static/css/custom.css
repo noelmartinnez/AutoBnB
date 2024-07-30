@@ -1,0 +1,345 @@
+body, html {
+    height: 100%; /* asegura que la página tenga al menos la altura del viewport */
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1; /* empuja el footer hacia abajo */
+}
+
+.footer {
+    background-color: #f5f5f5;
+    text-align: center;
+    line-height: 60px; /* ajusta la altura del footer como prefieras */
+}
+
+/* BOTÓN DE CAMBIAR DE MODO ARRENDADOR - ARRENDATARIO */
+.container-check {
+    width: 51px;
+    height: 31px;
+    position: relative;
+}
+
+/* Hide default HTML checkbox */
+.checkbox-check {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.switch {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background-color: #e9e9eb;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease-out;
+}
+
+/* The slider */
+.slider {
+    width: 27px;
+    height: 27px;
+    position: absolute;
+    left: calc(50% - 27px/2 - 10px);
+    top: calc(50% - 27px/2);
+    border-radius: 50%;
+    background: #FFFFFF;
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.15), 0px 3px 1px rgba(0, 0, 0, 0.06);
+    transition: all 0.2s ease-out;
+    cursor: pointer;
+}
+
+.checkbox-check:checked + .switch {
+    background-color: #81c784;
+}
+
+.checkbox-check:checked + .switch .slider {
+    left: calc(50% - 27px/2 + 10px);
+    top: calc(50% - 27px/2);
+}
+
+
+/* ABOUT */
+.about-section {
+    max-width: 1200px;
+    margin: 100px auto;
+    padding: 10px 50px 50px 50px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Añade una sombra ligera si es necesario */
+}
+
+.about-content {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.column {
+    flex: 1;
+    padding: 20px;
+    min-width: 300px; /* o un mínimo que te parezca adecuado para el diseño */
+}
+
+.column h2 {
+    font-size: 24px; /* Ajusta al tamaño de tu diseño */
+    color: #333; /* Cambia por el color del texto de tu diseño */
+    margin-bottom: 20px;
+}
+
+.column p {
+    font-size: 16px; /* Ajusta al tamaño de tu diseño */
+    color: #666; /* Cambia por el color del texto de tu diseño */
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* Estilos para pantallas pequeñas o dispositivos móviles */
+@media screen and (max-width: 768px) {
+    .about-content {
+        flex-direction: column;
+    }
+}
+
+.card {
+    width: fit-content;
+    height: fit-content;
+    background-color: rgb(238, 238, 238);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 25px 25px;
+    gap: 20px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.055);
+    flex-direction: row; /* Cambio realizado aquí */
+}
+
+/* for all social containers*/
+.socialContainer {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background-color: rgb(44, 44, 44);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition-duration: .3s;
+}
+/* instagram*/
+.containerOne:hover {
+    background-color: #d62976;
+    transition-duration: .3s;
+}
+/* twitter*/
+.containerTwo:hover {
+    background-color: #00acee;
+    transition-duration: .3s;
+}
+/* linkdin*/
+.containerThree:hover {
+    background-color: #0072b1;
+    transition-duration: .3s;
+}
+/* Whatsapp*/
+.containerFour:hover {
+    background-color: #128C7E;
+    transition-duration: .3s;
+}
+
+.socialContainer:active {
+    transform: scale(0.9);
+    transition-duration: .3s;
+}
+
+.socialSvg {
+    width: 17px;
+}
+
+.socialSvg path {
+    fill: rgb(255, 255, 255);
+}
+
+.socialContainer:hover .socialSvg {
+    animation: slide-in-top 0.3s both;
+}
+
+@keyframes slide-in-top {
+    0% {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Para el botón de sumar saldo */
+
+.button-sumar {
+    position: relative;
+    padding: 10px 22px;
+    border-radius: 6px;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    background-color: #81c784;
+    transition: all 0.2s ease;
+}
+
+.button-sumar:active {
+    transform: scale(0.96);
+}
+
+.button-sumar:before,
+.button-sumar:after {
+    position: absolute;
+    content: "";
+    width: 150%;
+    left: 50%;
+    height: 100%;
+    transform: translateX(-50%);
+    z-index: -1000;
+    background-repeat: no-repeat;
+}
+
+.button-sumar:hover:before {
+    top: -70%;
+    background-image: radial-gradient(circle, #81c784 20%, transparent 20%),
+    radial-gradient(circle, transparent 20%, #81c784 20%, transparent 30%),
+    radial-gradient(circle, #81c784 20%, transparent 20%),
+    radial-gradient(circle, #81c784 20%, transparent 20%),
+    radial-gradient(circle, transparent 10%, #81c784 15%, transparent 20%),
+    radial-gradient(circle, #81c784 20%, transparent 20%),
+    radial-gradient(circle, #81c784 20%, transparent 20%),
+    radial-gradient(circle, #81c784 20%, transparent 20%),
+    radial-gradient(circle, #81c784 20%, transparent 20%);
+    background-size: 10% 10%, 20% 20%, 15% 15%, 20% 20%, 18% 18%, 10% 10%, 15% 15%,
+    10% 10%, 18% 18%;
+    background-position: 50% 120%;
+    animation: greentopBubbles 0.6s ease;
+}
+
+@keyframes greentopBubbles {
+    0% {
+        background-position: 5% 90%, 10% 90%, 10% 90%, 15% 90%, 25% 90%, 25% 90%,
+        40% 90%, 55% 90%, 70% 90%;
+    }
+
+    50% {
+        background-position: 0% 80%, 0% 20%, 10% 40%, 20% 0%, 30% 30%, 22% 50%,
+        50% 50%, 65% 20%, 90% 30%;
+    }
+
+    100% {
+        background-position: 0% 70%, 0% 10%, 10% 30%, 20% -10%, 30% 20%, 22% 40%,
+        50% 40%, 65% 10%, 90% 20%;
+        background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+    }
+}
+
+.button-sumar:hover::after {
+    bottom: -70%;
+    background-image: radial-gradient(circle, #81c784 20%, transparent 20%),
+    radial-gradient(circle, #81c784 20%, transparent 20%),
+    radial-gradient(circle, transparent 10%, #81c784 15%, transparent 20%),
+    radial-gradient(circle, #81c784 20%, transparent 20%),
+    radial-gradient(circle, #81c784 20%, transparent 20%),
+    radial-gradient(circle, #81c784 20%, transparent 20%),
+    radial-gradient(circle, #81c784 20%, transparent 20%);
+    background-size: 15% 15%, 20% 20%, 18% 18%, 20% 20%, 15% 15%, 20% 20%, 18% 18%;
+    background-position: 50% 0%;
+    animation: greenbottomBubbles 0.6s ease;
+}
+
+@keyframes greenbottomBubbles {
+    0% {
+        background-position: 10% -10%, 30% 10%, 55% -10%, 70% -10%, 85% -10%,
+        70% -10%, 70% 0%;
+    }
+
+    50% {
+        background-position: 0% 80%, 20% 80%, 45% 60%, 60% 100%, 75% 70%, 95% 60%,
+        105% 0%;
+    }
+
+    100% {
+        background-position: 0% 90%, 20% 90%, 45% 70%, 60% 110%, 75% 80%, 95% 70%,
+        110% 10%;
+        background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+    }
+}
+
+.separator-line {
+    border: none; /* Remueve el borde predeterminado */
+    height: 2px; /* Establece la altura de la línea */
+    background-color: #000; /* El color de la línea, cambia según tu diseño */
+    margin: 20px 0; /* Espaciado antes y después de la línea */
+}
+
+#navbar-toggler-checkbox {
+    display: none;
+}
+
+.toggle2 {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition-duration: .5s;
+}
+
+.bars {
+    width: 100%;
+    height: 3px;
+    background-color: white;
+    border-radius: 3px;
+}
+
+#bar5 {
+    transition-duration: .8s;
+}
+
+#bar4,#bar6 {
+    width: 70%;
+}
+
+#navbar-toggler-checkbox:checked + .toggle2 .bars {
+    position: absolute;
+    transition-duration: .5s;
+}
+
+#navbar-toggler-checkbox:checked + .toggle2 #bar5 {
+    transform: scaleX(0);
+    transition-duration: .5s;
+}
+
+#navbar-toggler-checkbox:checked + .toggle2 #bar4 {
+    width: 100%;
+    transform: rotate(45deg);
+    transition-duration: .5s;
+}
+
+#navbar-toggler-checkbox:checked + .toggle2 #bar6 {
+    width: 100%;
+    transform: rotate(-45deg);
+    transition-duration: .5s;
+}
+
+#navbar-toggler-checkbox:checked + .toggle2 {
+    transition-duration: .5s;
+    transform: rotate(180deg);
+}

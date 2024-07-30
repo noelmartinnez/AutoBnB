@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="head (titulo)">
+    <meta charset="UTF-8"/>
+    <title th:text="${titulo}"></title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <link rel="stylesheet" th:href="@{/css/listadoVehiculos.css}">
+    <link rel="stylesheet" th:href="@{/css/tablas.css}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+<!-- NavBar para usuarios logueados -->
+<nav class="navbar navbar-expand-lg navbar-light" style="font-family: 'serif'; background-color: #81c784; padding-top: 1rem; padding-bottom: 1rem;" th:fragment="navbar">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+        <!-- Botón hamburguesa para pantallas pequeñas -->
+        <input id="navbar-toggler-checkbox" type="checkbox" style="display: none;" data-toggle="collapse" data-target="#navbarLogged" aria-controls="navbarLogged" aria-expanded="false" aria-label="Toggle navigation">
+        <label for="navbar-toggler-checkbox" class="toggle toggle2 d-lg-none">
+            <div id="bar4" class="bars"></div>
+            <div id="bar5" class="bars"></div>
+            <div id="bar6" class="bars"></div>
+        </label>
+
+        <!-- Sección izquierda: Logo y enlaces -->
+        <div class="collapse navbar-collapse" id="navbarLogged">
+            <div style="display: flex; align-items: center; flex-grow: 1;">
+                <a class="navbar-brand" href="/home" style="color: white; margin-right: 4rem; font-size: 1.7em; flex-grow: 1; text-align: left;">AutoBnB</a>
+                <ul class="navbar-nav" style="flex-direction: row; align-items: center;">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/listado-vehiculos" style="color: white; margin-right: 1rem;">Vehículos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/listado-vehiculos/ofertas" style="color: white; margin-right: 1rem;">Ofertas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about" style="color: white; margin-right: 1rem;">About</a>
+                    </li>
+                    <!-- Solo se mostrará si el usuario es administrador -->
+                    <li th:if="${admin}" class="nav-item">
+                        <a class="nav-link" href="/administracion" style="color: white; margin-right: 1rem;">Administración</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Campo de búsqueda en el centro -->
+            <form th:action="@{'/listado-vehiculos/busqueda'}" method="get" th:object="${busquedaData}" class="form-inline my-2 my-lg-0" style="flex-grow: 1; justify-content: center; max-width: 600px;">
+                <input id="busqueda" name="busqueda" class="form-control mr-sm-2" type="search" placeholder="Busca tu vehículo ideal..." aria-label="Search" style="width: 100%; border-radius: 20px; padding: 0.5rem 1rem;">
+            </form>
+
+            <!-- Sección derecha: Perfil y sesión -->
+            <div style="display: flex; align-items: center;">
+                <ul class="navbar-nav" style="flex-direction: row; align-items: center;">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false" style="color: white; margin-right: 1rem;">
+                            <span th:text="${userName}">Nombre usuario</span>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="userDropdown">
+                            <a class="dropdown-item" th:href="@{'/perfil/' + ${userId}}">Perfil</a>
+                            <a class="dropdown-item" href="/logout">Cerrar sesión</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <div id="switch-modo" th:data-usuario-id="${userId}" class="container-check">
+                            <input type="checkbox" class="checkbox-check" id="checkbox" onchange="toggleRol()">
+                            <label class="switch" for="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </li>
+                    <li class="nav-item" style="margin-left: 20px">
+                        <span style="color: white" th:if="${arrendatario}">Arrendatario</span>
+                        <span style="color: white" th:if="${arrendador}">Arrendador</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- NavBar para usuarios no logueados -->
+<nav class="navbar navbar-expand-lg navbar-light" style="font-family: 'serif'; background-color: #81c784; padding-top: 1rem; padding-bottom: 1rem;" th:fragment="navbar_noLogueado">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+        <!-- Botón hamburguesa para pantallas pequeñas -->
+        <input id="navbar-toggler-checkbox" type="checkbox" style="display: none;" data-toggle="collapse" data-target="#navbarNoLogged" aria-controls="navbarNoLogged" aria-expanded="false" aria-label="Toggle navigation">
+        <label for="navbar-toggler-checkbox" class="toggle toggle2 d-lg-none">
+            <div id="bar4" class="bars"></div>
+            <div id="bar5" class="bars"></div>
+            <div id="bar6" class="bars"></div>
+        </label>
+
+        <!-- Logo y enlaces a la izquierda -->
+        <div class="collapse navbar-collapse" id="navbarNoLogged">
+            <div style="display: flex; align-items: center; flex-grow: 1;">
+                <a class="navbar-brand" href="/home" style="color: white; margin-right: 4rem; font-size: 1.7em; flex-grow: 1; text-align: left;">AutoBnB</a>
+                <ul class="navbar-nav" style="flex-direction: row; align-items: center;">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/listado-vehiculos" style="color: white; margin-right: 1rem;">Vehículos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/listado-vehiculos/ofertas" style="color: white; margin-right: 1rem;">Ofertas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about" style="color: white; margin-right: 1rem;">About</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Campo de búsqueda en el centro -->
+            <form th:action="@{'/listado-vehiculos/busqueda'}" method="get" th:object="${busquedaData}" class="form-inline my-2 my-lg-0" style="flex-grow: 1; justify-content: center; max-width: 600px;">
+                <input id="busqueda" name="busqueda" class="form-control mr-sm-2" type="search" placeholder="Busca tu vehículo ideal..." aria-label="Search" style="width: 100%; border-radius: 20px; padding: 0.5rem 1rem;">
+            </form>
+
+            <!-- Enlaces de login y registro a la derecha -->
+            <ul class="navbar-nav" style="flex-direction: row; align-items: center;">
+                <li class="nav-item">
+                    <a class="nav-link" href="/login" style="color: white; margin-left: 1rem;">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/registro" style="color: white; margin-left: 1rem;">Registro</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<footer class="footer bg-light" th:fragment="footer" style="font-family: serif">
+    <div class="container text-center">
+        <span class="text-muted">© 2024 AutoBnB. All rights reserved.</span>
+    </div>
+</footer>
+
+<div th:fragment="javascript">
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/popper.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/index.global.min.js}"></script>
+    <script>
+        function toggleRol() {
+            var switchModo = document.getElementById('switch-modo');
+            var userId = switchModo.getAttribute('data-usuario-id');
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/cambiarRol/' + userId;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
+</div>
+</body>
+
+</html>

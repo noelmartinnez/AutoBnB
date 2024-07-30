@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Administración Alquileres')"></head>
+
+<body>
+<!-- Si el usuario está logueado, incluye el Navbar normal -->
+<div th:if="${usuario != null}">
+    <!-- Recuperamos el objeto "usuarios" que nos pasa el Controller y usamos sus atributos, pasandolos al NavBar -->
+    <div th:replace="fragments :: navbar(userName=${usuario} ? ${usuario.getNombre()} : '',
+                         userId=${usuario} ? ${usuario.getId()} : '',
+                         admin=${usuario} ? ${usuario.isAdministrador()} : '',
+                         arrendador=${usuario} ? ${usuario.isEsArrendador()} : '',
+                         arrendatario=${usuario} ? ${usuario.isEsArrendatario()} : '')"></div>
+</div>
+
+<!-- Si el usuario no está logueado, incluye el Navbar para no logueados -->
+<div th:if="${usuario == null}">
+    <div th:replace="fragments :: navbar_noLogueado"></div>
+</div>
+
+<main style="flex: 1;">
+    <div class="container-fluid">
+        <div class="row mt-3">
+            <div class="col">
+                <h2 style="color: #171a1d; text-align: center; margin-bottom: 10px; margin-top: 30px; font-family: serif;">Administración Alquileres</h2>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col text-end">
+                <a href="/administracion" class="btn btn-link" style="color: #171a1d; font-family: serif; margin-left: 10px;">Volver al Panel</a>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col">
+                <div class="table-responsive table-alquileres-admin">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th style="color: #333; font-family: serif;">ID</th>
+                            <th style="color: #333; font-family: serif;">Vehículo</th>
+                            <th style="color: #333; font-family: serif;">Usuario</th>
+                            <th style="color: #333; font-family: serif;">Fecha Entrega</th>
+                            <th style="color: #333; font-family: serif;">Fecha Devolución</th>
+                            <th style="color: #333; font-family: serif;">Días Alquilado</th>
+                            <th style="color: #333; font-family: serif;">Litros Combustible</th>
+                            <th style="color: #333; font-family: serif;">Precio Final</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="alquiler: ${alquileres.content}">
+                            <td style="color: #333; font-family: 'Quicksand', sans-serif;" th:text="${alquiler.id}"></td>
+                            <td style="color: #333; font-family: 'Quicksand', sans-serif;" th:text="${alquiler.vehiculo.marca.nombre} + ' ' + ${alquiler.vehiculo.modelo.nombre}"></td>
+                            <td style="color: #333; font-family: 'Quicksand', sans-serif;" th:text="${alquiler.pago.usuario.nombre}"></td>
+                            <td style="color: #333; font-family: 'Quicksand', sans-serif;" th:text="${alquiler.fechaEntrega}"></td>
+                            <td style="color: #333; font-family: 'Quicksand', sans-serif;" th:text="${alquiler.fechaDevolucion}"></td>
+                            <td style="color: #333; font-family: 'Quicksand', sans-serif;" th:text="${alquiler.litrosCombustible == null || alquiler.litrosCombustible <= 0} ? ${diasDeAlquiler[alquiler.id]} : '-'"></td>
+                            <td style="color: #333; font-family: 'Quicksand', sans-serif;" th:text="${alquiler.litrosCombustible != null && alquiler.litrosCombustible > 0} ? ${alquiler.litrosCombustible} : '-'"></td>
+                            <td style="color: #333; font-family: 'Quicksand', sans-serif;" th:text="${alquiler.precioFinal} + ' €'"></td>
+                            <td>
+                                <form style="font-family: serif" th:action="@{'/administracion/alquileres/eliminar/' + ${alquiler.id}}" method="post">
+                                    <button type="submit" class="btn btn-danger btn-xs">X</button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div th:if="${cantidad != null}" class="d-flex justify-content-center" style="font-family: serif;">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${alquileres.first} ? 'disabled'">
+                        <a class="page-link" th:href="@{/administracion/alquileres(page=${alquileres.number - 1}, size=${alquileres.size})}">Anterior</a>
+                    </li>
+                    <li th:each="pageNum : ${#numbers.sequence(0, alquileres.totalPages - 1)}" class="page-item" th:classappend="${pageNum == alquileres.number} ? 'active'">
+                        <a class="page-link" th:href="@{/administracion/alquileres(page=${pageNum}, size=${alquileres.size})}" th:text="${pageNum + 1}">1</a>
+                    </li>
+                    <li class="page-item" th:classappend="${alquileres.last} ? 'disabled'">
+                        <a class="page-link" th:href="@{/administracion/alquileres(page=${alquileres.number + 1}, size=${alquileres.size})}">Siguiente</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</main>
+
+<div th:replace="fragments :: footer"></div>
+<div th:replace="fragments::javascript"/>
+</body>
+</html>

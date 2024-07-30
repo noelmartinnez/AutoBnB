@@ -1,0 +1,426 @@
+@media (max-width: 768px) {
+    .table-alquileres-usuario table, .table-alquileres-usuario thead, .table-alquileres-usuario tbody, .table-alquileres-usuario th, .table-alquileres-usuario td, .table-alquileres-usuario tr {
+        display: block;
+    }
+    .table-alquileres-usuario thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    .table-alquileres-usuario tr { border: 1px solid #ccc; }
+    .table-alquileres-usuario td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        text-align: left;
+    }
+    .table-alquileres-usuario td:before {
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+    .table-alquileres-usuario td:nth-of-type(1):before { content: "Vehículo"; }
+    .table-alquileres-usuario td:nth-of-type(2):before { content: "Fecha Entrega"; }
+    .table-alquileres-usuario td:nth-of-type(3):before { content: "Fecha Devolución"; }
+    .table-alquileres-usuario td:nth-of-type(4):before { content: "Días Alquilado"; }
+    .table-alquileres-usuario td:nth-of-type(5):before { content: "Litros Combustible"; }
+    .table-alquileres-usuario td:nth-of-type(6):before { content: "Precio Final"; }
+}
+@media (max-width: 768px) {
+    .table-comentarios-usuario table, .table-comentarios-usuario thead, .table-comentarios-usuario tbody, .table-comentarios-usuario th, .table-comentarios-usuario td, .table-comentarios-usuario tr {
+        display: block;
+    }
+    .table-comentarios-usuario thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    .table-comentarios-usuario tr { border: 1px solid #ccc; }
+    .table-comentarios-usuario td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        text-align: left;
+        margin-bottom: 10px; /* Ajuste para la separación de botones */
+    }
+    .table-comentarios-usuario td:before {
+        position: absolute;
+        top: 12px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+
+    .table-comentarios-usuario td:nth-of-type(1):before { content: "Vehículo"; }
+    .table-comentarios-usuario td:nth-of-type(2):before { content: "Fecha Creación"; }
+    .table-comentarios-usuario td:nth-of-type(3):before { content: "Descripción"; }
+    .table-comentarios-usuario td:nth-of-type(4):before { content: "Editar"; }
+    .table-comentarios-usuario td:nth-of-type(5):before { content: "Eliminar"; }
+}
+@media (max-width: 768px) {
+    .table-comentarios-admin table, .table-comentarios-admin thead, .table-comentarios-admin tbody,
+    .table-comentarios-admin th, .table-comentarios-admin td, .table-comentarios-admin tr {
+        display: block;
+    }
+    .table-comentarios-admin thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    .table-comentarios-admin tr { border: 1px solid #ccc; }
+    .table-comentarios-admin td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        text-align: left;
+        margin-bottom: 10px; /* Ajuste para la separación de botones */
+    }
+    .table-comentarios-admin td:before {
+        position: absolute;
+        top: 12px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+    .table-comentarios-admin td:nth-of-type(1):before { content: "ID"; }
+    .table-comentarios-admin td:nth-of-type(2):before { content: "Vehículo"; }
+    .table-comentarios-admin td:nth-of-type(3):before { content: "Usuario"; }
+    .table-comentarios-admin td:nth-of-type(4):before { content: "Fecha Creación"; }
+    .table-comentarios-admin td:nth-of-type(5):before { content: "Descripción"; }
+    .table-comentarios-admin td:nth-of-type(6):before { content: "Editar"; }
+    .table-comentarios-admin td:nth-of-type(7):before { content: "Eliminar"; }
+}
+@media (max-width: 768px) {
+    .table-alquileres-admin table, .table-alquileres-admin thead, .table-alquileres-admin tbody,
+    .table-alquileres-admin th, .table-alquileres-admin td, .table-alquileres-admin tr {
+        display: block;
+    }
+    .table-alquileres-admin thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    .table-alquileres-admin tr { border: 1px solid #ccc; }
+    .table-alquileres-admin td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        text-align: left;
+        margin-bottom: 10px; /* Ajuste para la separación de botones */
+    }
+    .table-alquileres-admin td:before {
+        position: absolute;
+        top: 12px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+    .table-alquileres-admin td:nth-of-type(1):before { content: "ID"; }
+    .table-alquileres-admin td:nth-of-type(2):before { content: "Vehículo"; }
+    .table-alquileres-admin td:nth-of-type(3):before { content: "Usuario"; }
+    .table-alquileres-admin td:nth-of-type(4):before { content: "Fecha Entrega"; }
+    .table-alquileres-admin td:nth-of-type(5):before { content: "Fecha Devolución"; }
+    .table-alquileres-admin td:nth-of-type(6):before { content: "Días Alquilado"; }
+    .table-alquileres-admin td:nth-of-type(7):before { content: "Litros Combustible"; }
+    .table-alquileres-admin td:nth-of-type(8):before { content: "Precio Final"; }
+    .table-alquileres-admin td:nth-of-type(9):before { content: "Eliminar"; }
+}
+@media (max-width: 768px) {
+    .table-cuentas-admin table, .table-cuentas-admin thead, .table-cuentas-admin tbody,
+    .table-cuentas-admin th, .table-cuentas-admin td, .table-cuentas-admin tr {
+        display: block;
+    }
+    .table-cuentas-admin thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    .table-cuentas-admin tr { border: 1px solid #ccc; }
+    .table-cuentas-admin td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        text-align: left;
+        margin-bottom: 10px; /* Ajuste para la separación de botones */
+    }
+    .table-cuentas-admin td:before {
+        position: absolute;
+        top: 12px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+    .table-cuentas-admin td:nth-of-type(1):before { content: "ID"; }
+    .table-cuentas-admin td:nth-of-type(2):before { content: "Número Cuenta"; }
+    .table-cuentas-admin td:nth-of-type(3):before { content: "Usuario"; }
+    .table-cuentas-admin td:nth-of-type(4):before { content: "Saldo"; }
+}
+@media (max-width: 768px) {
+    .table-modelos-admin table, .table-modelos-admin thead, .table-modelos-admin tbody,
+    .table-modelos-admin th, .table-modelos-admin td, .table-modelos-admin tr {
+        display: block;
+    }
+    .table-modelos-admin thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    .table-modelos-admin tr { border: 1px solid #ccc; }
+    .table-modelos-admin td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        text-align: left;
+        margin-bottom: 10px; /* Ajuste para la separación de botones */
+    }
+    .table-modelos-admin td:before {
+        position: absolute;
+        top: 12px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+    .table-modelos-admin td:nth-of-type(1):before { content: "ID"; }
+    .table-modelos-admin td:nth-of-type(2):before { content: "Marca"; }
+    .table-modelos-admin td:nth-of-type(3):before { content: "Nombre"; }
+    .table-modelos-admin td:nth-of-type(4):before { content: "Editar"; }
+    .table-modelos-admin td:nth-of-type(5):before { content: "Eliminar"; }
+}
+@media (max-width: 768px) {
+    .table-marcas-admin table, .table-marcas-admin thead, .table-marcas-admin tbody,
+    .table-marcas-admin th, .table-marcas-admin td, .table-marcas-admin tr {
+        display: block;
+    }
+    .table-marcas-admin thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    .table-marcas-admin tr { border: 1px solid #ccc; }
+    .table-marcas-admin td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        text-align: left;
+        margin-bottom: 10px; /* Ajuste para la separación de botones */
+    }
+    .table-marcas-admin td:before {
+        position: absolute;
+        top: 12px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+    .table-marcas-admin td:nth-of-type(1):before { content: "ID"; }
+    .table-marcas-admin td:nth-of-type(2):before { content: "Nombre"; }
+    .table-marcas-admin td:nth-of-type(3):before { content: "Editar"; }
+    .table-marcas-admin td:nth-of-type(4):before { content: "Eliminar"; }
+}
+@media (max-width: 768px) {
+    .table-transmisiones-admin table, .table-transmisiones-admin thead, .table-transmisiones-admin tbody,
+    .table-transmisiones-admin th, .table-transmisiones-admin td, .table-transmisiones-admin tr {
+        display: block;
+    }
+    .table-transmisiones-admin thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    .table-transmisiones-admin tr { border: 1px solid #ccc; }
+    .table-transmisiones-admin td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        text-align: left;
+        margin-bottom: 10px; /* Ajuste para la separación de botones */
+    }
+    .table-transmisiones-admin td:before {
+        position: absolute;
+        top: 12px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+    .table-transmisiones-admin td:nth-of-type(1):before { content: "ID"; }
+    .table-transmisiones-admin td:nth-of-type(2):before { content: "Nombre"; }
+    .table-transmisiones-admin td:nth-of-type(3):before { content: "Editar"; }
+    .table-transmisiones-admin td:nth-of-type(4):before { content: "Eliminar"; }
+}
+@media (max-width: 768px) {
+    .table-categorias-admin table, .table-categorias-admin thead, .table-categorias-admin tbody,
+    .table-categorias-admin th, .table-categorias-admin td, .table-categorias-admin tr {
+        display: block;
+    }
+    .table-categorias-admin thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    .table-categorias-admin tr { border: 1px solid #ccc; }
+    .table-categorias-admin td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        text-align: left;
+        margin-bottom: 10px; /* Ajuste para la separación de botones */
+    }
+    .table-categorias-admin td:before {
+        position: absolute;
+        top: 12px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+    .table-categorias-admin td:nth-of-type(1):before { content: "ID"; }
+    .table-categorias-admin td:nth-of-type(2):before { content: "Nombre"; }
+    .table-categorias-admin td:nth-of-type(3):before { content: "Descripción"; }
+    .table-categorias-admin td:nth-of-type(4):before { content: "Editar"; }
+    .table-categorias-admin td:nth-of-type(5):before { content: "Eliminar"; }
+}
+@media (max-width: 768px) {
+    .table-colores-admin table, .table-colores-admin thead, .table-colores-admin tbody,
+    .table-colores-admin th, .table-colores-admin td, .table-colores-admin tr {
+        display: block;
+    }
+    .table-colores-admin thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    .table-colores-admin tr { border: 1px solid #ccc; }
+    .table-colores-admin td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        text-align: left;
+        margin-bottom: 10px; /* Ajuste para la separación de botones */
+    }
+    .table-colores-admin td:before {
+        position: absolute;
+        top: 12px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+    .table-colores-admin td:nth-of-type(1):before { content: "ID"; }
+    .table-colores-admin td:nth-of-type(2):before { content: "Nombre"; }
+    .table-colores-admin td:nth-of-type(3):before { content: "Editar"; }
+    .table-colores-admin td:nth-of-type(4):before { content: "Eliminar"; }
+}
+@media (max-width: 768px) {
+    .table-vehiculos-admin table, .table-vehiculos-admin thead, .table-vehiculos-admin tbody,
+    .table-vehiculos-admin th, .table-vehiculos-admin td, .table-vehiculos-admin tr {
+        display: block;
+    }
+    .table-vehiculos-admin thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    .table-vehiculos-admin tr { border: 1px solid #ccc; }
+    .table-vehiculos-admin td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        text-align: left;
+        margin-bottom: 10px; /* Ajuste para la separación de botones */
+    }
+    .table-vehiculos-admin td:before {
+        position: absolute;
+        top: 12px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+    .table-vehiculos-admin td:nth-of-type(1):before { content: "ID"; }
+    .table-vehiculos-admin td:nth-of-type(2):before { content: "Matricula"; }
+    .table-vehiculos-admin td:nth-of-type(3):before { content: "Kilometraje"; }
+    .table-vehiculos-admin td:nth-of-type(4):before { content: "Fabricación"; }
+    .table-vehiculos-admin td:nth-of-type(5):before { content: "Pasajeros"; }
+    .table-vehiculos-admin td:nth-of-type(6):before { content: "Maletero"; }
+    .table-vehiculos-admin td:nth-of-type(7):before { content: "Puertas"; }
+    .table-vehiculos-admin td:nth-of-type(8):before { content: "Marchas"; }
+    .table-vehiculos-admin td:nth-of-type(9):before { content: "€ día"; }
+    .table-vehiculos-admin td:nth-of-type(10):before { content: "€ medio día"; }
+    .table-vehiculos-admin td:nth-of-type(11):before { content: "€ combustible"; }
+    .table-vehiculos-admin td:nth-of-type(12):before { content: "Editar"; }
+    .table-vehiculos-admin td:nth-of-type(13):before { content: "Eliminar"; }
+    .table-vehiculos-admin td:nth-of-type(14):before { content: "Detalles"; }
+}
+@media (max-width: 768px) {
+    .table-usuarios-admin table, .table-usuarios-admin thead, .table-usuarios-admin tbody,
+    .table-usuarios-admin th, .table-usuarios-admin td, .table-usuarios-admin tr {
+        display: block;
+    }
+    .table-usuarios-admin thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    .table-usuarios-admin tr { border: 1px solid #ccc; }
+    .table-usuarios-admin td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        text-align: left;
+        margin-bottom: 10px; /* Ajuste para la separación de botones */
+    }
+    .table-usuarios-admin td:before {
+        position: absolute;
+        top: 12px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+    .table-usuarios-admin td:nth-of-type(1):before { content: "ID"; }
+    .table-usuarios-admin td:nth-of-type(2):before { content: "Nombre"; }
+    .table-usuarios-admin td:nth-of-type(3):before { content: "Apellidos"; }
+    .table-usuarios-admin td:nth-of-type(4):before { content: "Email"; }
+    .table-usuarios-admin td:nth-of-type(5):before { content: "Teléfono"; }
+    .table-usuarios-admin td:nth-of-type(6):before { content: "Dirección"; }
+    .table-usuarios-admin td:nth-of-type(7):before { content: "Ciudad"; }
+    .table-usuarios-admin td:nth-of-type(8):before { content: "C. Postal"; }
+    .table-usuarios-admin td:nth-of-type(9):before { content: "DNI"; }
+    .table-usuarios-admin td:nth-of-type(10):before { content: "Cad. DNI"; }
+    .table-usuarios-admin td:nth-of-type(11):before { content: "Carnet"; }
+    .table-usuarios-admin td:nth-of-type(12):before { content: "Editar"; }
+    .table-usuarios-admin td:nth-of-type(13):before { content: "Eliminar"; }
+}

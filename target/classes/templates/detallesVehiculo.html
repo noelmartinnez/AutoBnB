@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Detalles Vehículo')"></head>
+
+<body>
+<!-- Si el usuario está logueado, incluye el Navbar normal -->
+<div th:if="${usuario != null}">
+    <!-- Recuperamos el objeto "usuarios" que nos pasa el Controller y usamos sus atributos, pasandolos al NavBar -->
+    <div th:replace="fragments :: navbar(userName=${usuario} ? ${usuario.getNombre()} : '',
+                         userId=${usuario} ? ${usuario.getId()} : '',
+                         admin=${usuario} ? ${usuario.isAdministrador()} : '',
+                         arrendador=${usuario} ? ${usuario.isEsArrendador()} : '',
+                         arrendatario=${usuario} ? ${usuario.isEsArrendatario()} : '')"></div>
+</div>
+
+<!-- Si el usuario no está logueado, incluye el Navbar para no logueados -->
+<div th:if="${usuario == null}">
+    <div th:replace="fragments :: navbar_noLogueado"></div>
+</div>
+
+<p class="text-center mt-3" style="margin-top: 0; margin-bottom: 20px;">
+    <a href="/listado-vehiculos" class="btn btn-link" style="color: #171a1d; font-family: serif">Volver al listado</a>
+</p>
+
+<main th:if="${usuario == null}" style="padding: 0 50px 50px 50px;">
+    <div class="container" style="max-width: 1000px; background: white; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h1 th:text="${vehiculo.marca.nombre + ' ' + vehiculo.modelo.nombre}" style="font-size: 24px; color: #333; font-family: serif"></h1>
+            <span th:if="${vehiculo.oferta == null}" th:text="${vehiculo.getPrecioPorDiaSinDecimales()} + '€ / día'" style="font-size: 18px; color: #555; font-family: serif"></span>
+            <div th:if="${vehiculo.oferta != null}" class="price" style="font-family: serif">
+                <span style="text-decoration: line-through; color: #555;" th:text="${vehiculo.getPrecioPorDiaSinDecimales()} + '€'"></span>
+                <span style="color: red; margin-left: 10px;" th:text="${precioOferta} + '€'"></span>
+                <span style="color: #555;">/ día</span>
+            </div>
+            <!-- Condición para mostrar el número de comentarios si existen -->
+            <div th:if="${comentarios != null and cantidadComentarios != null}" style="font-size: 18px; color: #555; font-family: serif">
+                <span th:text="${cantidadComentarios} + ' comentarios en este producto.'"></span>
+            </div>
+            <!-- Si no hay comentarios, no se muestra nada o se puede mostrar un mensaje predeterminado -->
+            <div th:if="${cantidadComentarios == null}" style="font-size: 18px; color: #555; font-family: serif">
+                <span>No hay comentarios en este producto.</span>
+            </div>
+        </div>
+        <div style="margin-bottom: 30px;">
+            <img th:src="@{|/uploads/${vehiculo.imagen}|}" alt="Imagen del Vehículo" style="width: 100%; height: auto; display: block; margin-bottom: 30px;">
+        </div>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <span th:text="${vehiculo.descripcion}" style="font-size: 18px; color: #555; font-family: serif"></span>
+        </div>
+        <div style="border-top: 1px solid #eee; padding-top: 20px;">
+            <p style="font-size: 18px; color: #666; font-family: 'serif';"><strong>Detalles del vehículo</strong></p>
+            <p style="color: #333; font-family: 'Quicksand', sans-serif;">
+                <strong style="font-family: serif">Matrícula:</strong> <span th:text="${vehiculo.matricula}"></span>&nbsp;&nbsp;&nbsp;
+                <strong style="font-family: serif">Marca:</strong> <span th:text="${vehiculo.marca.nombre}"></span>&nbsp;&nbsp;&nbsp;
+                <strong style="font-family: serif">Modelo:</strong> <span th:text="${vehiculo.modelo.nombre}"></span>
+            </p>
+            <p style="color: #333; font-family: 'Quicksand', sans-serif;">
+                <strong style="font-family: serif">Transmisión:</strong> <span th:text="${vehiculo.transmision.nombre}"></span>&nbsp;&nbsp;&nbsp;
+                <strong style="font-family: serif">Color:</strong> <span th:text="${vehiculo.color.nombre}"></span>&nbsp;&nbsp;&nbsp;
+                <strong style="font-family: serif">Categoria:</strong> <span th:text="${vehiculo.categoria.nombre}"></span>
+            </p>
+            <p style="color: #333; font-family: 'Quicksand', sans-serif;">
+                <strong style="font-family: serif">Año de Fabricación:</strong> <span th:text="${vehiculo.anyoFabricacion}"></span>&nbsp;&nbsp;&nbsp;
+                <strong style="font-family: serif">Kilometraje:</strong> <span th:text="${vehiculo.kilometraje} + ' Km'"></span>
+            </p>
+            <p style="color: #333; font-family: 'Quicksand', sans-serif;">
+                <strong style="font-family: serif">Capacidad del Maletero:</strong> <span th:text="${vehiculo.capacidadMaletero} + ' litros'"></span>&nbsp;&nbsp;&nbsp;
+                <strong style="font-family: serif">Capacidad de Pasajeros:</strong> <span th:text="${vehiculo.capacidadPasajeros}"></span>
+            </p>
+            <p style="color: #333; font-family: 'Quicksand', sans-serif;">
+                <strong style="font-family: serif">Número de marchas:</strong> <span th:text="${vehiculo.numeroMarchas}"></span>&nbsp;&nbsp;&nbsp;
+                <strong style="font-family: serif">Número de puertas:</strong> <span th:text="${vehiculo.numeroPuertas}"></span>
+            </p>
+            <br/>
+            <p style="font-size: 18px; color: #666; font-family: 'serif';"><strong>Precios sin oferta y disponibilidad</strong></p>
+            <p style="color: #333; font-family: 'Quicksand', sans-serif;">
+                <strong style="font-family: serif">Precio por día:</strong> <span th:text="${vehiculo.getPrecioPorDiaSinDecimales()} + ' €'"></span>&nbsp;&nbsp;&nbsp;
+                <strong style="font-family: serif">Precio por Medio Día:</strong> <span th:text="${vehiculo.getPrecioPorMedioDiaSinDecimales()} + ' €'"></span>&nbsp;&nbsp;&nbsp;
+                <strong style="font-family: serif">Precio del Combustible:</strong> <span th:text="${vehiculo.precioCombustible} + ' €'"></span>
+            </p>
+            <p style="color: #333; font-family: 'Quicksand', sans-serif;">
+                <strong style="font-family: serif">Estado:</strong> <span th:text="${vehiculo.enMantenimiento ? 'En mantenimiento' : 'Disponible'}"></span>&nbsp;&nbsp;&nbsp;
+                <strong style="font-family: serif">Aire Acondicionado:</strong> <span th:text="${vehiculo.aireAcondicionado ? 'Instalado' : 'No disponible'}"></span>
+            </p>
+        </div>
+
+        <div class="container" style="max-width: 1200px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+            <p th:if="${comentarios != null and cantidadComentarios != null}" style="font-size: 18px; color: #666; font-family: 'serif';"><strong>Comentarios <span th:text="'(' + ${cantidadComentarios} + ')'"></span></strong></p>
+            <p th:if="${cantidadComentarios == null}" style="font-size: 18px; color: #666; font-family: 'serif';"><strong>Comentarios <span th:text="'(0)'"></span></strong></p>
+
+            <div class="row">
+                <div th:if="${comentarios != null}" th:each="comentario : ${comentarios}" class="col-md-4 mb-4 d-flex justify-content-center">
+                    <div class="card" style="background-color: transparent; box-shadow: 0 1px 1px 0 rgba(0,0,0,0.2); width: auto; margin: 0 auto;">
+                        <div class="card-body">
+                            <h5 style="font-family: 'serif';" class="card-title" th:text="${comentario.descripcion}"></h5>
+                            <p class="card-text">
+                                <small class="text-muted" th:text="${comentario.fechaCreacion}"></small>
+                            </p>
+                            <p class="card-text" th:text="${comentario.usuario.nombre}"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<main th:if="${usuario != null}" style="padding: 0 50px 50px 50px;">
+    <div class="container" style="max-width: 1000px; background: white; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h1 th:text="${vehiculo.marca.nombre + ' ' + vehiculo.modelo.nombre}" style="font-size: 24px; color: #333; font-family: serif"></h1>
+            <span th:if="${vehiculo.oferta == null}" th:text="${vehiculo.getPrecioPorDiaSinDecimales()} + '€ / día'" style="font-size: 18px; color: #555; font-family: serif"></span>
+            <div th:if="${vehiculo.oferta != null}" class="price" style="font-family: serif">
+                <span style="text-decoration: line-through; color: #555;" th:text="${vehiculo.getPrecioPorDiaSinDecimales()} + '€'"></span>
+                <span style="color: red; margin-left: 10px;" th:text="${precioOferta} + '€'"></span>
+                <span style="color: #555;">/ día</span>
+            </div>
+            <!-- Condición para mostrar el número de comentarios si existen -->
+            <div th:if="${comentarios != null and cantidadComentarios != null}" style="font-size: 18px; color: #555; font-family: serif">
+                <span th:text="${cantidadComentarios} + ' comentarios en este producto.'"></span>
+            </div>
+            <!-- Si no hay comentarios, no se muestra nada o se puede mostrar un mensaje predeterminado -->
+            <div th:if="${cantidadComentarios == null}" style="font-size: 18px; color: #555; font-family: serif">
+                <span>No hay comentarios en este producto.</span>
+            </div>
+        </div>
+        <div style="margin-bottom: 30px;">
+            <img th:src="@{|/uploads/${vehiculo.imagen}|}" alt="Imagen del Vehículo" style="width: 100%; height: auto; display: block; margin-bottom: 30px;">
+        </div>
+        <div style="text-align: center; margin-bottom: 30px; font-family: serif">
+            <span th:text="${vehiculo.descripcion}" style="font-size: 18px; color: #555;"></span>
+            <br/>
+            <br/>
+            <a th:if="${propio != true and usuario.isEsArrendatario()}" th:href="@{/alquilar/{vehiculoId}(vehiculoId=${vehiculo.id})}" style="margin-top: 10px; width: 20%; padding: 10px; background-color: #171a1d; color: white; border: none; cursor: pointer;">Alquilar</a>
+        </div>
+        <div style="border-top: 1px solid #eee; padding-top: 20px;">
+            <p style="font-size: 18px; color: #666; font-family: 'serif';"><strong>Detalles del vehículo</strong></p>
+            <p style="color: #333; font-family: 'Quicksand', sans-serif;">
+                <strong style="font-family: serif">Matrícula:</strong> <span th:text="${vehiculo.matricula}"></span>&nbsp;&nbsp;&nbsp;
+                <strong style="font-family: serif">Marca:</strong> <span th:text="${vehiculo.marca.nombre}"></span>&nbsp;&nbsp;&nbsp;
+                <strong style="font-family: serif">Modelo:</strong> <span th:text="${vehiculo.modelo.nombre}"></span>
+            </p>
+            <p style="color: #333; font-family: 'Quicksand', sans-serif;">
+                <strong style="font-family: serif">Transmisión:</strong> <span th:text="${vehiculo.transmision.nombre}"></span>&nbsp;&nbsp;&nbsp;
+                <strong style="font-family: serif">Color:</strong> <span th:text="${vehiculo.color.nombre}"></span>&nbsp;&nbsp;&nbsp;
+                <strong style="font-family: serif">Categoria:</strong> <span th:text="${vehiculo.categoria.nombre}"></span>
+            </p>
+            <p style="color: #333; font-family: 'Quicksand', sans-serif;">
+                <strong style="font-family: serif">Año de Fabricación:</strong> <span th:text="${vehiculo.anyoFabricacion}"></span>&nbsp;&nbsp;&nbsp;
+                <strong style="font-family: serif">Kilometraje:</strong> <span th:text="${vehiculo.kilometraje} + ' Km'"></span>
+            </p>
+            <p style="color: #333; font-family: 'Quicksand', sans-serif;">
+                <strong style="font-family: serif">Capacidad del Maletero:</strong> <span th:text="${vehiculo.capacidadMaletero} + ' litros'"></span>&nbsp;&nbsp;&nbsp;
+                <strong style="font-family: serif">Capacidad de Pasajeros:</strong> <span th:text="${vehiculo.capacidadPasajeros}"></span>
+            </p>
+            <p style="color: #333; font-family: 'Quicksand', sans-serif;">
+                <strong style="font-family: serif">Número de marchas:</strong> <span th:text="${vehiculo.numeroMarchas}"></span>&nbsp;&nbsp;&nbsp;
+                <strong style="font-family: serif">Número de puertas:</strong> <span th:text="${vehiculo.numeroPuertas}"></span>
+            </p>
+            <br/>
+            <p style="font-size: 18px; color: #666; font-family: 'serif';"><strong>Precios sin oferta y disponibilidad</strong></p>
+            <p style="color: #333; font-family: 'Quicksand', sans-serif;">
+                <strong style="font-family: serif">Precio por día:</strong> <span th:text="${vehiculo.getPrecioPorDiaSinDecimales()} + ' €'"></span>&nbsp;&nbsp;&nbsp;
+                <strong style="font-family: serif">Precio por Medio Día:</strong> <span th:text="${vehiculo.getPrecioPorMedioDiaSinDecimales()} + ' €'"></span>&nbsp;&nbsp;&nbsp;
+                <strong style="font-family: serif">Precio del Combustible:</strong> <span th:text="${vehiculo.precioCombustible} + ' €'"></span>
+            </p>
+            <p style="color: #333; font-family: 'Quicksand', sans-serif;">
+                <strong style="font-family: serif">Estado:</strong> <span th:text="${vehiculo.enMantenimiento ? 'En mantenimiento' : 'Disponible'}"></span>&nbsp;&nbsp;&nbsp;
+                <strong style="font-family: serif">Aire Acondicionado:</strong> <span th:text="${vehiculo.aireAcondicionado ? 'Instalado' : 'No disponible'}"></span>
+            </p>
+        </div>
+
+        <div class="container" style="max-width: 1200px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+            <p th:if="${comentarios != null and cantidadComentarios != null}" style="font-size: 18px; color: #666; font-family: 'serif';"><strong>Comentarios <span th:text="'(' + ${cantidadComentarios} + ')'"></span></strong></p>
+            <p th:if="${cantidadComentarios == null}" style="font-size: 18px; color: #666; font-family: 'serif';"><strong>Comentarios <span th:text="'(0)'"></span></strong></p>
+
+            <!-- Formulario para nuevo comentario -->
+            <div th:if="${propio != true and usuario.isEsArrendatario()}" style="margin-bottom: 20px; font-family: serif">
+                <form th:action="@{/comentarios/home/agregar/{vehiculoId}(vehiculoId=${vehiculo.id})}" method="post">
+                    <input type="text" class="form-control" name="descripcion" placeholder="Deja un comentario" required style="width: 50%; margin-bottom: 10px;">
+                    <input type="hidden" th:value="${usuario.id}" name="usuarioId">
+                    <button type="submit" style="margin-top: 10px; width: 50%; padding: 10px; background-color: #171a1d; color: white; border: none; cursor: pointer;">Publicar</button>
+                </form>
+            </div>
+
+            <br/>
+
+            <div class="row">
+                <div th:if="${comentarios != null}" th:each="comentario : ${comentarios}" class="col-md-4 mb-4 d-flex justify-content-center">
+                    <div class="card" style="background-color: transparent; box-shadow: 0 1px 1px 0 rgba(0,0,0,0.2); width: auto; margin: 0 auto;">
+                        <div class="card-body">
+                            <h5 style="font-family: 'serif';" class="card-title" th:text="${comentario.descripcion}"></h5>
+                            <p class="card-text">
+                                <small class="text-muted" th:text="${comentario.fechaCreacion}"></small>
+                            </p>
+                            <p class="card-text" th:text="${comentario.usuario.nombre}"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="fragments :: footer"></div>
+<div th:replace="fragments::javascript"/>
+</body>
+</html>

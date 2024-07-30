@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Administración Transmisiones')"></head>
+
+<body>
+<!-- Si el usuario está logueado, incluye el Navbar normal -->
+<div th:if="${usuario != null}">
+    <!-- Recuperamos el objeto "usuarios" que nos pasa el Controller y usamos sus atributos, pasandolos al NavBar -->
+    <div th:replace="fragments :: navbar(userName=${usuario} ? ${usuario.getNombre()} : '',
+                         userId=${usuario} ? ${usuario.getId()} : '',
+                         admin=${usuario} ? ${usuario.isAdministrador()} : '',
+                         arrendador=${usuario} ? ${usuario.isEsArrendador()} : '',
+                         arrendatario=${usuario} ? ${usuario.isEsArrendatario()} : '')"></div>
+</div>
+
+<!-- Si el usuario no está logueado, incluye el Navbar para no logueados -->
+<div th:if="${usuario == null}">
+    <div th:replace="fragments :: navbar_noLogueado"></div>
+</div>
+
+<main style="flex: 1;">
+    <div class="container-fluid">
+        <div class="row mt-3">
+            <div class="col">
+                <h2 style="color: #171a1d; text-align: center; margin-bottom: 10px; margin-top: 30px; font-family: serif;">Administración Transmisiones</h2>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col text-end">
+                <a href="/administracion/transmisiones/crear" style="background-color: #005cbf;  color: #fbfcfc; font-family: serif" class="btn">Crear Transmisión</a>
+                <a href="/administracion" class="btn btn-link" style="color: #171a1d; font-family: serif; margin-left: 10px;">Volver al Panel</a>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col">
+                <div class="table-responsive table-transmisiones-admin">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th style="color: #333; font-family: serif;">ID</th>
+                            <th style="color: #333; font-family: serif;">Nombre</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="transmision: ${transmisiones.content}">
+                            <td style="color: #333; font-family: 'Quicksand', sans-serif;" th:text="${transmision.id}"></td>
+                            <td style="color: #333; font-family: 'Quicksand', sans-serif;" th:text="${transmision.nombre}"></td>
+                            <td>
+                                <a class="btn btn-xs" style="background-color: #81c784;  color: #fbfcfc; font-family: serif" th:href="@{/administracion/transmisiones/editar/{transmisionId}(transmisionId=${transmision.id})}">Editar</a>
+                            </td>
+                            <td>
+                                <form style="font-family: serif" th:action="@{'/administracion/transmisiones/eliminar/' + ${transmision.id}}" method="post">
+                                    <button type="submit" class="btn btn-danger btn-xs">X</button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div th:if="${cantidad != null}" class="d-flex justify-content-center" style="font-family: serif;">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${transmisiones.first} ? 'disabled'">
+                        <a class="page-link" th:href="@{/administracion/transmisiones(page=${transmisiones.number - 1}, size=${transmisiones.size})}">Anterior</a>
+                    </li>
+                    <li th:each="pageNum : ${#numbers.sequence(0, transmisiones.totalPages - 1)}" class="page-item" th:classappend="${pageNum == transmisiones.number} ? 'active'">
+                        <a class="page-link" th:href="@{/administracion/transmisiones(page=${pageNum}, size=${transmisiones.size})}" th:text="${pageNum + 1}">1</a>
+                    </li>
+                    <li class="page-item" th:classappend="${transmisiones.last} ? 'disabled'">
+                        <a class="page-link" th:href="@{/administracion/transmisiones(page=${transmisiones.number + 1}, size=${transmisiones.size})}">Siguiente</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</main>
+
+<div th:replace="fragments :: footer"></div>
+<div th:replace="fragments::javascript"/>
+</body>
+</html>

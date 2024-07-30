@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Home')"></head>
+
+<body>
+    <!-- Si el usuario está logueado, incluye el Navbar normal -->
+    <div th:if="${usuario != null}">
+        <!-- Recuperamos el objeto "usuarios" que nos pasa el Controller y usamos sus atributos, pasandolos al NavBar -->
+        <div th:replace="fragments :: navbar(userName=${usuario} ? ${usuario.getNombre()} : '',
+                         userId=${usuario} ? ${usuario.getId()} : '',
+                         admin=${usuario} ? ${usuario.isAdministrador()} : '',
+                         arrendador=${usuario} ? ${usuario.isEsArrendador()} : '',
+                         arrendatario=${usuario} ? ${usuario.isEsArrendatario()} : '')"></div>
+    </div>
+
+    <!-- Si el usuario no está logueado, incluye el Navbar para no logueados -->
+    <div th:if="${usuario == null}">
+        <div th:replace="fragments :: navbar_noLogueado"></div>
+    </div>
+
+    <main style="flex: 1;">
+        <!-- Banner principal -->
+        <section class="banner">
+            <h1 style="color: #171a1d; text-align: center; margin-bottom: 10px; margin-top: 30px; font-family: 'serif';">Explora, Comparte, Conduce</h1>
+            <p class="text-center" style="font-family: 'Quicksand', sans-serif;">Tu Aventura Empieza Aquí</p>
+        </section>
+
+        <!-- Sección de búsqueda -->
+        <section class="search-section py-4" style="font-family: 'Quicksand', sans-serif">
+            <div class="container">
+                <form th:action="@{'/listado-vehiculos/home/busqueda'}" method="get" th:object="${busquedaHomeData}" class="search-form">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <select id="idMarca" class="form-control" name="idMarca" style="font-family: serif" required>
+                                <option value="">Seleccione una Marca...</option>
+                                <option th:each="marca : ${marcas}" th:value="${marca.id}" th:text="${marca.nombre}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select id="idCategoria" class="form-control" name="idCategoria" style="font-family: serif" required>
+                                <option value="">Seleccione una Categoria...</option>
+                                <option th:each="categoria : ${categorias}" th:value="${categoria.id}" th:text="${categoria.nombre}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-2" style="font-family: serif">
+                            <input type="date" name="fechaInicial" class="form-control">
+                        </div>
+                        <div class="col-md-2" style="font-family: serif">
+                            <input type="date" name="fechaFinal" class="form-control">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn w-100" style="background-color: #81c784; color: #fbfcfc; font-family: serif">Buscar</button>
+                        </div>
+                    </div>
+                </form>
+                <div th:if="${error != null}" class="alert alert-danger" id="errorDiv" style="width: 50%; margin: 0 auto; text-align: center; margin-top: 30px;">
+                    <p th:text="${error}"></p>
+                </div>
+            </div>
+        </section>
+
+        <h2 style="color: #171a1d; text-align: center; margin-bottom: 10px; margin-top: 30px; font-family: 'serif'; border-top: 1px solid #eee; padding-top: 30px;">¡Vehículos en oferta!</h2>
+        <div class="container-fluid" style="margin-top: 30px;">
+            <div class="row mt-3" style="display: flex; flex-wrap: wrap; justify-content: space-around; font-family: serif">
+                <div th:each="vehiculo : ${vehiculos}" style="width: 18rem; margin: 1rem; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);">
+                    <a th:href="@{/home/detalles-vehiculo/{vehiculoId}(vehiculoId=${vehiculo.id})}">
+                        <img th:src="@{|/uploads/${vehiculo.imagen}|}" alt="Imagen del vehículo" style="width: 288px; height: 150px; object-fit: cover; display: block;">
+                    </a>
+                    <div style="text-align: center; padding: 1rem;">
+                        <h5 th:text="${vehiculo.marca.nombre} + ' ' + ${vehiculo.modelo.nombre}" style="margin-bottom: 0.5rem;"></h5>
+                        <div th:if="${vehiculo.oferta == null}">
+                            <span th:text="${vehiculo.getPrecioPorDiaSinDecimales()} + '€ / día'" style="font-size: 1rem; color: #555;"></span>
+                        </div>
+                        <div th:if="${vehiculo.oferta != null}" style="text-align: center;">
+                            <span style="text-decoration: line-through; color: #555; font-size: 1rem;" th:text="${vehiculo.getPrecioPorDiaSinDecimales()} + '€'"></span>
+                            <span style="font-size: 1rem;">
+                                <span style="color: red;" th:text="${preciosOferta[vehiculo.id]} + '€'"></span>
+                                <span style="color: #555;">/ día</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center" style="margin-top: 20px; margin-bottom: 15px">
+            <strong><a style="color: #555; font-family: 'serif';" href="/listado-vehiculos/ofertas">VER TODOS LOS VEHÍCULOS EN OFERTA</a></strong>
+        </div>
+
+        <!-- Sección 'Explora oportunidades' -->
+        <h2 style="color: #171a1d; text-align: center; margin-bottom: 10px; margin-top: 25px; font-family: 'serif'; border-top: 1px solid #eee; padding-top: 30px;">Explora oportunidades y encuentra la opción perfecta</h2>
+        <section class="features py-5">
+            <div class="container">
+                <div class="row text-center">
+                    <div class="col-md-4 mb-3">
+                        <div class="feature-card">
+                            <i class="icon fa fa-tag fa-2x"></i>
+                            <h4 style="font-family: 'serif'">Ofertas</h4>
+                            <p style="font-family: 'Quicksand', sans-serif;">Descubre nuestras irresistibles ofertas en alquiler de vehículos. Encuentra la mejor manera de moverte al mejor precio.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="feature-card">
+                            <i class="icon fa fa-calendar-check-o fa-2x"></i>
+                            <h4 style="font-family: 'serif'">Disponibilidad</h4>
+                            <p style="font-family: 'Quicksand', sans-serif;">Consulta nuestra amplia disponibilidad de vehículos en múltiples ubicaciones. Encuentra el vehículo perfecto para satisfacer tus necesidades de movilidad.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="feature-card">
+                            <i class="icon fa fa-leaf fa-2x"></i>
+                            <h4 style="font-family: 'serif'">Vehículos Eco-Amigables</h4>
+                            <p style="font-family: 'Quicksand', sans-serif;">Explora nuestra selección de vehículos eco-amigables, diseñados para reducir tu huella ambiental sin comprometer la comodidad y el estilo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="fragments :: footer"></div>
+    <div th:replace="fragments::javascript"/>
+
+    <script>
+        window.onload = function() {
+            var errorDiv = document.getElementById('errorDiv');
+            if (errorDiv) {
+                setTimeout(function() {
+                    errorDiv.style.display = 'none';
+                }, 5000);
+            }
+        };
+    </script>
+</body>
+</html>

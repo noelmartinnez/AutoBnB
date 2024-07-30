@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Error')"></head>
+
+<body>
+<!-- Si el usuario está logueado, incluye el Navbar normal -->
+<div th:if="${usuario != null}">
+    <!-- Recuperamos el objeto "usuarios" que nos pasa el Controller y usamos sus atributos, pasandolos al NavBar -->
+    <div th:replace="fragments :: navbar(userName=${usuario} ? ${usuario.getNombre()} : '',
+                         userId=${usuario} ? ${usuario.getId()} : '',
+                         admin=${usuario} ? ${usuario.isAdministrador()} : '',
+                         arrendador=${usuario} ? ${usuario.isEsArrendador()} : '',
+                         arrendatario=${usuario} ? ${usuario.isEsArrendatario()} : '')"></div>
+</div>
+
+<!-- Si el usuario no está logueado, incluye el Navbar para no logueados -->
+<div th:if="${usuario == null}">
+    <div th:replace="fragments :: navbar_noLogueado"></div>
+</div>
+
+<main style="display: flex; justify-content: center; align-items: center; height: calc(100vh - 60px); font-family: Arial, sans-serif;">
+    <div style="text-align: center; width: 100%;">
+        <h1 style="margin-bottom: 20px; font-family: serif; color: #c82333">HA OCURRIDO UN ERROR</h1>
+    </div>
+</main>
+
+<div th:replace="fragments :: footer"></div>
+<div th:replace="fragments :: javascript"></div>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Panel de Administrador')"></head>
+
+<body>
+<!-- Si el usuario está logueado, incluye el Navbar normal -->
+<div th:if="${usuario != null}">
+    <!-- Recuperamos el objeto "usuarios" que nos pasa el Controller y usamos sus atributos, pasandolos al NavBar -->
+    <div th:replace="fragments :: navbar(userName=${usuario} ? ${usuario.getNombre()} : '',
+                         userId=${usuario} ? ${usuario.getId()} : '',
+                         admin=${usuario} ? ${usuario.isAdministrador()} : '',
+                         arrendador=${usuario} ? ${usuario.isEsArrendador()} : '',
+                         arrendatario=${usuario} ? ${usuario.isEsArrendatario()} : '')"></div>
+</div>
+
+<!-- Si el usuario no está logueado, incluye el Navbar para no logueados -->
+<div th:if="${usuario == null}">
+    <div th:replace="fragments :: navbar_noLogueado"></div>
+</div>
+
+<main style="display: flex; justify-content: center; align-items: center; height: calc(100vh - 60px); font-family: serif;">
+    <div style="text-align: center; width: 100%;">
+        <h1 style="margin-bottom: 20px;">Panel de Administrador</h1>
+        <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; max-width: 800px; margin: auto;">
+            <a href="/administracion/usuarios" style="padding: 10px 15px; margin: 5px; border: 1px solid #ccc; background-color: #f5f5f5; cursor: pointer; text-decoration: none; color: black;">USUARIOS</a>
+            <a href="/administracion/vehiculos" style="padding: 10px 15px; margin: 5px; border: 1px solid #ccc; background-color: #f5f5f5; cursor: pointer; text-decoration: none; color: black;">VEHÍCULOS</a>
+            <a href="/administracion/comentarios" style="padding: 10px 15px; margin: 5px; border: 1px solid #ccc; background-color: #f5f5f5; cursor: pointer; text-decoration: none; color: black;">COMENTARIOS</a>
+            <a href="/administracion/cuentas" style="padding: 10px 15px; margin: 5px; border: 1px solid #ccc; background-color: #f5f5f5; cursor: pointer; text-decoration: none; color: black;">CUENTAS</a>
+            <a href="/administracion/colores" style="padding: 10px 15px; margin: 5px; border: 1px solid #ccc; background-color: #f5f5f5; cursor: pointer; text-decoration: none; color: black;">COLORES</a>
+            <a href="/administracion/categorias" style="padding: 10px 15px; margin: 5px; border: 1px solid #ccc; background-color: #f5f5f5; cursor: pointer; text-decoration: none; color: black;">CATEGORÍAS</a>
+            <a href="/administracion/alquileres" style="padding: 10px 15px; margin: 5px; border: 1px solid #ccc; background-color: #f5f5f5; cursor: pointer; text-decoration: none; color: black;">ALQUILERES</a>
+            <a href="/administracion/transmisiones" style="padding: 10px 15px; margin: 5px; border: 1px solid #ccc; background-color: #f5f5f5; cursor: pointer; text-decoration: none; color: black;">TRANSMISIONES</a>
+            <a href="/administracion/marcas" style="padding: 10px 15px; margin: 5px; border: 1px solid #ccc; background-color: #f5f5f5; cursor: pointer; text-decoration: none; color: black;">MARCAS</a>
+            <a href="/administracion/modelos" style="padding: 10px 15px; margin: 5px; border: 1px solid #ccc; background-color: #f5f5f5; cursor: pointer; text-decoration: none; color: black;">MODELOS</a>
+        </div>
+    </div>
+</main>
+
+<div th:replace="fragments :: footer"></div>
+<div th:replace="fragments::javascript"/>
+
+</body>
+</html>

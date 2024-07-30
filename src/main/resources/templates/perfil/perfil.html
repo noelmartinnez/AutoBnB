@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Perfil')">
+    <!-- Enlace a Bootstrap Stylesheet -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+WyL7Q4q6txlSZq9ubRSfau8UcK7J6h"
+          crossorigin="anonymous"/>
+</head>
+
+<body style="font-family: 'Quicksand', sans-serif;">
+    <div th:if="${logueado != null}">
+        <div th:replace="fragments :: navbar(userName=${usuario} ? ${usuario.getNombre()} : '',
+                         userId=${usuario} ? ${usuario.getId()} : '',
+                         admin=${usuario} ? ${usuario.isAdministrador()} : '',
+                         arrendador=${usuario} ? ${usuario.isEsArrendador()} : '',
+                         arrendatario=${usuario} ? ${usuario.isEsArrendatario()} : '')"></div>
+    </div>
+
+    <main style="flex: 1;">
+        <div class="container-lg mt-4">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="text-center">
+                        <img style="box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); width: auto; max-height: 500px;" th:src="@{|/uploads/${usuario.imagen}|}" alt="Foto de perfil" class="img-fluid"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center mt-4">
+                <div class="col-12">
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-md-6 text-center">
+                            <div style="font-family: serif"><strong>Correo Electrónico: </strong><span th:text="${usuario.email}" style="font-family: 'Quicksand', sans-serif;"></span></div>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <div style="font-family: serif"><strong>Nombre: </strong><span th:text="${usuario.nombre}" style="font-family: 'Quicksand', sans-serif;"></span></div>
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-center" style="margin-top: 15px">
+                        <div class="col-md-6 text-center">
+                            <div style="font-family: serif"><strong>Apellidos: </strong><span th:text="${usuario.apellidos != null ? usuario.apellidos : 'No especificados'}" style="font-family: 'Quicksand', sans-serif;"></span></div>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <div style="font-family: serif"><strong>DNI: </strong><span th:text="${usuario.dni}" style="font-family: 'Quicksand', sans-serif;"></span></div>
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-center" style="margin-top: 15px">
+                        <div class="col-md-6 text-center">
+                            <div style="font-family: serif"><strong>Teléfono: </strong><span th:text="${usuario.telefono}" style="font-family: 'Quicksand', sans-serif;"></span></div>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <div style="font-family: serif"><strong>Código Postal: </strong><span th:text="${usuario.codigoPostal}" style="font-family: 'Quicksand', sans-serif;"></span></div>
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-center" style="margin-top: 15px">
+                        <div class="col-md-6 text-center">
+                            <div style="font-family: serif"><strong>Ciudad: </strong><span th:text="${usuario.ciudad}" style="font-family: 'Quicksand', sans-serif;"></span></div>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <div style="font-family: serif"><strong>Dirección: </strong><span th:text="${usuario.direccion}" style="font-family: 'Quicksand', sans-serif;"></span></div>
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-center" style="margin-top: 15px">
+                        <div class="col-md-6 text-center">
+                            <div style="font-family: serif"><strong>Carnet de conducir: </strong><span th:text="${usuario.fechaCarnetConducir}" style="font-family: 'Quicksand', sans-serif;"></span></div>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <div style="font-family: serif"><strong>Caducidad DNI: </strong><span th:text="${usuario.fechaCaducidadDni}" style="font-family: 'Quicksand', sans-serif;"></span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4 justify-content-center" style="font-family: serif;">
+                <div class="col-md-8">
+                    <div class="d-flex flex-wrap justify-content-around"> <!-- Flex container for buttons -->
+                        <a th:href="@{'/perfil/' + ${logueado.getId()} + '/actualizar'}"
+                           class="btn" style="background-color: #81c784; color: #fbfcfc; padding: 10px 20px; margin: 5px;">Actualizar Perfil</a>
+                        <a th:href="@{'/perfil/' + ${logueado.getId()} + '/vehiculos'}"
+                           class="btn" style="background-color: #81c784; color: #fbfcfc; padding: 10px 20px; margin: 5px;" th:if="${usuario.esArrendador}">Ver Vehículos</a>
+                        <a th:href="@{'/perfil/' + ${logueado.getId()} + '/añadir-vehiculo'}"
+                           class="btn" style="background-color: #81c784; color: #fbfcfc; padding: 10px 20px; margin: 5px;" th:if="${usuario.esArrendador}">Añadir Vehículo</a>
+                        <a th:href="@{'/perfil/' + ${logueado.getId()} + '/comentarios'}"
+                           class="btn" style="background-color: #81c784; color: #fbfcfc; padding: 10px 20px; margin: 5px;" th:if="${usuario.esArrendatario}">Ver Comentarios</a>
+                        <a th:href="@{'/perfil/' + ${logueado.getId()} + '/vehiculosAlquiladosArrendatario'}"
+                           class="btn" style="background-color: #81c784; color: #fbfcfc; padding: 10px 20px; margin: 5px;" th:if="${usuario.esArrendatario}">Ver Alquileres</a>
+                        <a th:href="@{'/perfil/' + ${logueado.getId()} + '/cuenta'}"
+                           class="btn" style="background-color: #81c784; color: #fbfcfc; padding: 10px 20px; margin: 5px;">Ver Cuenta</a>
+                    </div>
+                </div>
+            </div>
+            <br/>
+        </div>
+    </main>
+
+    <div th:replace="fragments :: footer"></div>
+    <div th:replace="fragments::javascript"></div>
+</body>
+</html>

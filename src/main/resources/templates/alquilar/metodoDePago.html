@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Método Pago')"></head>
+
+<body>
+<div th:if="${usuario != null}">
+    <div th:replace="fragments :: navbar(userName=${usuario} ? ${usuario.getNombre()} : '',
+                         userId=${usuario} ? ${usuario.getId()} : '',
+                         admin=${usuario} ? ${usuario.isAdministrador()} : '',
+                         arrendador=${usuario} ? ${usuario.isEsArrendador()} : '',
+                         arrendatario=${usuario} ? ${usuario.isEsArrendatario()} : '')"></div>
+</div>
+
+<div th:if="${usuario == null}">
+    <div th:replace="fragments :: navbar_noLogueado"></div>
+</div>
+
+<main style="flex: 1;">
+    <div class="container" style="margin-top: 50px;">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6">
+                <h2 style="color: #171a1d; text-align: center; margin-bottom: 30px; font-family: serif">Método de pago</h2>
+                <form method="get" th:action="@{/alquilar/{vehiculoId}/detallesAlquiler (vehiculoId=${vehiculo.id})}" onsubmit="return validateForm()">
+                    <div class="form-row">
+                            <label for="tarjeta" style="color: #333; font-family: 'serif';">Tarjeta de debito/crédito</label>
+                            <input id="tarjeta" class="form-control" name="tarjeta" type="number" style="font-family: 'Quicksand', sans-serif" required/>
+                            <div class="invalid-feedback">
+                                La tarjeta es obligatoria.
+                            </div>
+                    </div>
+
+                    <div th:if="${mismoDia}" class="form-row" style="font-family: serif">
+                        <label style="color: #333;">Has escogido un alquiler de 1 día o 1/2 día</label>
+                    </div>
+
+                    <div th:unless="${mismoDia}" class="form-row" style="font-family: serif">
+                        <label style="color: #333;">Has escogido un alquiler de <span th:text="${diasDeAlquiler}"></span> días</label>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="precioPorDia" style="color: #333; font-family: 'serif';">Precio por Día (€)</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <input type="checkbox" aria-label="Checkbox for following text input" name="selectedPrice" id="checkDia" onchange="onlyOneCheckbox(this.id)">
+                                    </div>
+                                </div>
+                                <input style="font-family: 'Quicksand', sans-serif" id="precioPorDia" class="form-control" type="text" th:value="${vehiculo.getPrecioPorDiaSinDecimales()} + ' €'" readonly/>
+                            </div>
+                        </div>
+                        <div th:if="${mismoDia}" class="form-group col-md-6">
+                            <label for="precioPorMedioDia" style="color: #333; font-family: 'serif';">Precio por Medio Día (€)</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <input type="checkbox" aria-label="Checkbox for following text input" name="selectedPrice" id="checkMedioDia" onchange="onlyOneCheckbox(this.id)">
+                                    </div>
+                                </div>
+                                <input style="font-family: 'Quicksand', sans-serif" id="precioPorMedioDia" class="form-control" type="text" th:value="${vehiculo.getPrecioPorMedioDiaSinDecimales()} + ' €'" readonly/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="precioPorCombustible" style="color: #333; font-family: 'serif';">Precio Combustible (€/L)</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <input type="checkbox" aria-label="Checkbox for following text input" name="selectedPrice" id="checkCombustible" onchange="onlyOneCheckbox(this.id)">
+                                    </div>
+                                </div>
+                                <input style="font-family: 'Quicksand', sans-serif" id="precioPorCombustible" class="form-control" type="text" th:value="${vehiculo.precioCombustible} + ' €'" readonly/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6" id="litrosCombustibleContainer" style="display:none;">
+                        <label for="litrosCombustible" style="color: #333; font-family: 'serif';">Litros de Combustible</label>
+                        <input style="font-family: 'Quicksand', sans-serif" id="litrosCombustible" class="form-control" name="litrosCombustible" type="number" min="5" required disabled/>
+                    </div>
+
+                    <input type="hidden" id="fechaInicial" name="fechaInicial" th:value="${#dates.format(fechaInicial, 'yyyy-MM-dd')}"/>
+                    <input type="hidden" id="fechaFinal" name="fechaFinal" th:value="${#dates.format(fechaFinal, 'yyyy-MM-dd')}"/>
+                    <input type="hidden" name="opcionSeleccionada" id="opcionSeleccionada" value="" />
+
+                    <div th:if="${error != null}" id="errorDiv" class="alert alert-danger" style="max-width: 500px; margin-left: auto; margin-right: auto; display: block; font-family: 'Quicksand', sans-serif;">
+                        <p th:text="${error}"></p>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block" style="background-color: #171a1d; border-color: #171a1d; color: #fff; font-family: serif">Detalles del pago</button>
+                    <p class="text-center mt-3" style="font-family: serif">
+                        <a href="/home" class="btn btn-link" style="color: #171a1d;">Cancelar</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="fragments :: footer"></div>
+<div th:replace="fragments::javascript"/>
+
+<script>
+    function onlyOneCheckbox(checkboxId) {
+        var checkboxes = document.getElementsByName('selectedPrice');
+        var selectedOption = document.getElementById('opcionSeleccionada');
+        var litrosInput = document.getElementById('litrosCombustible');
+        var litrosContainer = document.getElementById('litrosCombustibleContainer');
+
+        checkboxes.forEach((item) => {
+            if (item.id !== checkboxId) item.checked = false;
+            if (item.checked) {
+                selectedOption.value = item.id === 'checkDia' ? 'dia' :
+                    item.id === 'checkMedioDia' ? 'medioDia' :
+                        'combustible';
+                if (item.id === 'checkCombustible') {
+                    litrosContainer.style.display = '';
+                    litrosInput.disabled = false;
+                } else {
+                    litrosContainer.style.display = 'none';
+                    litrosInput.disabled = true;
+                    litrosInput.value = ''; // Clear value when not selected
+                }
+            }
+        });
+    }
+
+    window.onload = function() {
+        var checkboxes = document.getElementsByName('selectedPrice');
+        checkboxes.forEach((checkbox) => {
+            checkbox.checked = false;
+        });
+    }
+
+    function validateCardNumber(number) {
+        var regex = new RegExp("^[0-9]{13,19}$");
+        if (!regex.test(number)) {
+            return false;
+        }
+
+        var sum = 0;
+        var shouldDouble = false;
+        for (var i = number.length - 1; i >= 0; i--) {
+            var digit = parseInt(number.charAt(i));
+
+            if (shouldDouble) {
+                digit *= 2;
+                if (digit > 9) {
+                    digit -= 9;
+                }
+            }
+
+            sum += digit;
+            shouldDouble = !shouldDouble;
+        }
+
+        return (sum % 10) == 0;
+    }
+
+    function validateForm() {
+        var tarjeta = document.getElementById('tarjeta').value;
+        var checkboxes = document.querySelectorAll('input[name="selectedPrice"]:checked');
+        var litrosInput = document.getElementById('litrosCombustible');
+
+        if (!validateCardNumber(tarjeta)) {
+            alert('Número de tarjeta no válido. Por favor, verifica los datos ingresados.');
+            return false;
+        }
+        if (!tarjeta) {
+            alert('Por favor, ingresa el número de tarjeta.');
+            return false;
+        }
+        if (checkboxes.length === 0) {
+            alert('Por favor, selecciona una opción de pago.');
+            return false;
+        }
+        if (checkboxes[0].id === 'checkCombustible') {
+            if (!litrosInput.value) {
+                alert('Por favor, introduce la cantidad de litros de combustible.');
+                return false;
+            } else if (parseInt(litrosInput.value) < 5) {
+                alert('La cantidad mínima de litros de combustible debe ser 5.');
+                return false;
+            }
+        }
+        return true;
+    }
+</script>
+
+<script>
+    window.onload = function() {
+        var errorDiv = document.getElementById('errorDiv');
+        if (errorDiv) {
+            setTimeout(function() {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+    };
+</script>
+
+</body>
+</html>

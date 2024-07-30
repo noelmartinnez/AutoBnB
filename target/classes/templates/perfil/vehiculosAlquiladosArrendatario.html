@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Vehiculos Alquilados Arrendatario')"></head>
+
+<body>
+<!-- Si el usuario está logueado, incluye el Navbar normal -->
+<div th:if="${usuario != null}">
+    <!-- Recuperamos el objeto "usuarios" que nos pasa el Controller y usamos sus atributos, pasandolos al NavBar -->
+    <div th:replace="fragments :: navbar(userName=${usuario} ? ${usuario.getNombre()} : '',
+                         userId=${usuario} ? ${usuario.getId()} : '',
+                         admin=${usuario} ? ${usuario.isAdministrador()} : '',
+                         arrendador=${usuario} ? ${usuario.isEsArrendador()} : '',
+                         arrendatario=${usuario} ? ${usuario.isEsArrendatario()} : '')"></div>
+</div>
+
+<!-- Si el usuario no está logueado, incluye el Navbar para no logueados -->
+<div th:if="${usuario == null}">
+    <div th:replace="fragments :: navbar_noLogueado"></div>
+</div>
+
+<main style="flex: 1;">
+    <h2 style="color: #171a1d; text-align: center; margin-bottom: 10px; margin-top: 30px; font-family: serif">Vehículos con alquiler próximo</h2>
+
+    <p class="text-center mt-3">
+        <a th:href="@{'/perfil/' + ${usuario.id}}" class="btn btn-link" style="color: #171a1d; font-family: serif">Volver al Perfil</a>
+        <a th:href="@{'/perfil/' + ${usuario.id} + '/alquileres'}" class="btn btn-link" style="color: #171a1d; font-family: serif">Historial alquileres</a>
+    </p>
+
+    <div class="container-fluid" style="margin-top: 30px; font-family: serif">
+        <div class="row mt-3" style="display: flex; flex-wrap: wrap; justify-content: space-around;">
+            <div th:each="vehiculo : ${vehiculosPage.content}" style="width: 18rem; margin: 1rem; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);">
+                <a><img th:src="@{|/uploads/${vehiculo.imagen}|}" alt="Imagen del vehículo" style="width: 288px; height: 150px; object-fit: cover; display: block;"></a>
+                <div style="text-align: center; padding: 1rem;">
+                    <h5 th:text="${vehiculo.marca.nombre} + ' ' + ${vehiculo.modelo.nombre}" style="margin-bottom: 0.5rem;"></h5>
+                    <div style="display: flex; justify-content: center; align-items: center;">
+                        <a th:href="@{/perfil/{usuarioId}/vehiculos-alquilados/detalles/{vehiculoId}(usuarioId=${usuario.id}, vehiculoId=${vehiculo.id})}">Alquileres</a>
+                    </div>
+                    <div style="display: flex; justify-content: center; align-items: center; margin-top: 0.5rem;">
+                        <a th:href="@{/chat/arrendatario/{propietarioId}(propietarioId=${vehiculo.usuario.id})}">Chat</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${cantidad != null}" class="d-flex justify-content-center" style="font-family: serif;">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${vehiculosPage.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/perfil/{id}/vehiculosAlquiladosArrendatario(id=${usuario.id}, page=${vehiculosPage.number - 1}, size=${vehiculosPage.size})}">Anterior</a>
+                </li>
+                <li th:each="pageNum : ${#numbers.sequence(0, vehiculosPage.totalPages - 1)}" class="page-item" th:classappend="${pageNum == vehiculosPage.number} ? 'active'">
+                    <a class="page-link" th:href="@{/perfil/{id}/vehiculosAlquiladosArrendatario(id=${usuario.id}, page=${pageNum}, size=${vehiculosPage.size})}" th:text="${pageNum + 1}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${vehiculosPage.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/perfil/{id}/vehiculosAlquiladosArrendatario(id=${usuario.id}, page=${vehiculosPage.number + 1}, size=${vehiculosPage.size})}">Siguiente</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</main>
+
+<div th:replace="fragments :: footer"></div>
+<div th:replace="fragments::javascript"/>
+</body>
+</html>

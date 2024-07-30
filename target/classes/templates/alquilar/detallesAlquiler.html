@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Detalles Alquiler')"></head>
+
+<body>
+<div th:if="${usuario != null}">
+    <div th:replace="fragments :: navbar(userName=${usuario} ? ${usuario.getNombre()} : '',
+                         userId=${usuario} ? ${usuario.getId()} : '',
+                         admin=${usuario} ? ${usuario.isAdministrador()} : '',
+                         arrendador=${usuario} ? ${usuario.isEsArrendador()} : '',
+                         arrendatario=${usuario} ? ${usuario.isEsArrendatario()} : '')"></div>
+</div>
+
+<div th:if="${usuario == null}">
+    <div th:replace="fragments :: navbar_noLogueado"></div>
+</div>
+
+<main style="flex: 1;">
+    <div class="container" style="margin-top: 50px;">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6">
+                <h2 style="color: #171a1d; text-align: center; margin-bottom: 30px; font-family: serif">Detalles del Aquiler</h2>
+                <form method="get" th:action="@{/alquilar/{vehiculoId}/crearAlquiler (vehiculoId=${vehiculo.id})}">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="tarjeta" style="color: #333; font-family: 'serif;">Número de tarjeta</label>
+                            <input id="tarjeta" class="form-control" name="tarjeta" type="text" th:value="${numeroTarjeta}" style="font-family: 'Quicksand', sans-serif;" readonly/>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="tarjetaNombre" style="color: #333; font-family: 'serif';">Nombre en la tarjeta</label>
+                            <input id="tarjetaNombre" class="form-control" name="tarjetaNombre" type="text"
+                                   th:value="${usuario.nombre} + ((usuario.apellidos != null) ? ' ' + ${usuario.apellidos} : '')" style="font-family: 'Quicksand', sans-serif;" readonly/>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="fechaInicial" style="color: #333; font-family: 'serif';">Fecha de entrega</label>
+                            <input id="fechaInicial" class="form-control" name="fechaInicial" type="text" th:value="${#dates.format(fechaInicial, 'yyyy-MM-dd')}" style="font-family: 'Quicksand', sans-serif;" readonly/>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="fechaFinal" style="color: #333; font-family: 'serif';">Fecha de devolución</label>
+                            <input id="fechaFinal" class="form-control" name="fechaFinal" type="text" th:value="${#dates.format(fechaFinal, 'yyyy-MM-dd')}" style="font-family: 'Quicksand', sans-serif;" readonly/>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="metodo" style="color: #333; font-family: 'serif';">Método elegido</label>
+                            <input th:if="${opcionSeleccionada == 'dia'}" id="metodo" class="form-control" name="metodo" type="text" th:value="'Precio por dia'" style="font-family: 'Quicksand', sans-serif;" readonly>
+                            <input th:if="${opcionSeleccionada == 'medioDia'}" id="metodo" class="form-control" name="metodo" type="text" th:value="'Precio por medio dia'" style="font-family: 'Quicksand', sans-serif;" readonly/>
+                            <input th:if="${opcionSeleccionada == 'combustible'}" id="metodo" class="form-control" name="metodo" type="text" th:value="'Precio por combustible'" style="font-family: 'Quicksand', sans-serif;" readonly/>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="precio" style="color: #333; font-family: 'serif';">Precio (€)</label>
+                            <input th:if="${opcionSeleccionada == 'dia'}" id="precio" class="form-control" name="precio" type="text" th:value="${vehiculo.getPrecioPorDiaSinDecimales()}" style="font-family: 'Quicksand', sans-serif;" readonly/>
+                            <input th:if="${opcionSeleccionada == 'medioDia'}" id="precio" class="form-control" name="precio" type="text" th:value="${vehiculo.precioPorMedioDia}" style="font-family: 'Quicksand', sans-serif;" readonly/>
+                            <input th:if="${opcionSeleccionada == 'combustible'}" id="precio" class="form-control" name="precio" type="text" th:value="${vehiculo.precioCombustible}" style="font-family: 'Quicksand', sans-serif;" readonly/>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="direccion" style="color: #333; font-family: 'serif';">Dirección de entrega</label>
+                            <input id="direccion" class="form-control" name="direccion" type="text" th:value="${propietario.direccion}" style="font-family: 'Quicksand', sans-serif;" readonly/>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="precioTotal" style="color: #333; font-family: 'serif';">Total a pagar (€)</label>
+                            <input th:if="${vehiculo.oferta == null and opcionSeleccionada == 'dia' and mismoDia == null}" id="precioTotal" class="form-control" name="precioTotal" type="number" th:value="${diasDeAlquiler * vehiculo.precioPorDia}" style="font-family: 'Quicksand', sans-serif;" readonly/>
+                            <input th:if="${vehiculo.oferta != null and opcionSeleccionada == 'dia' and mismoDia == null}" id="precioTotal" class="form-control" name="precioTotal" type="number" th:value="${diasDeAlquiler * preciosOferta[vehiculo.id]}" style="font-family: 'Quicksand', sans-serif;" readonly/>
+
+                            <input th:if="${vehiculo.oferta == null and opcionSeleccionada == 'dia' and mismoDia == true}" id="precioTotal" class="form-control" name="precioTotal" type="number" th:value="${vehiculo.precioPorDia}" style="font-family: 'Quicksand', sans-serif;" readonly/>
+                            <input th:if="${vehiculo.oferta != null and opcionSeleccionada == 'dia' and mismoDia == true}" id="precioTotal" class="form-control" name="precioTotal" type="number" th:value="${preciosOferta[vehiculo.id]}" style="font-family: 'Quicksand', sans-serif;" readonly/>
+
+                            <input th:if="${vehiculo.oferta == null and opcionSeleccionada == 'medioDia'}" id="precioTotal" class="form-control" name="precioTotal" type="number" th:value="${vehiculo.precioPorMedioDia}" style="font-family: 'Quicksand', sans-serif;" readonly/>
+                            <input th:if="${vehiculo.oferta != null and opcionSeleccionada == 'medioDia'}" id="precioTotal" class="form-control" name="precioTotal" type="number" th:value="${preciosOferta[vehiculo.id]}" style="font-family: 'Quicksand', sans-serif;" readonly/>
+
+                            <input th:if="${opcionSeleccionada == 'combustible'}" id="precioTotal" class="form-control" name="precioTotal" type="number" th:value="${vehiculo.precioCombustible * litrosCombustible}" style="font-family: 'Quicksand', sans-serif;" readonly/>
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="litrosCombustible" name="litrosCombustible" th:value="${litrosCombustible}"/>
+                    <input type="hidden" id="opcionSeleccionada" name="opcionSeleccionada" th:value="${opcionSeleccionada}"/>
+
+                    <div th:if="${error != null}" id="errorDiv" class="alert alert-danger" style="max-width: 500px; margin-left: auto; margin-right: auto; display: block; font-family: 'Quicksand', sans-serif;">
+                        <p th:text="${error}"></p>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block" style="background-color: #171a1d; border-color: #171a1d; color: #fff; font-family: serif">Alquilar Vehículo</button>
+                    <p class="text-center mt-3" style="font-family: serif">
+                        <a href="/home" class="btn btn-link" style="color: #171a1d;">Cancelar</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="fragments :: footer"></div>
+<div th:replace="fragments::javascript"/>
+
+<script>
+    window.onload = function() {
+        var errorDiv = document.getElementById('errorDiv');
+        if (errorDiv) {
+            setTimeout(function() {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+    };
+</script>
+
+</body>
+</html>

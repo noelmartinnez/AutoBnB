@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Administración Cuentas')"></head>
+
+<body>
+<!-- Si el usuario está logueado, incluye el Navbar normal -->
+<div th:if="${usuario != null}">
+    <!-- Recuperamos el objeto "usuarios" que nos pasa el Controller y usamos sus atributos, pasandolos al NavBar -->
+    <div th:replace="fragments :: navbar(userName=${usuario} ? ${usuario.getNombre()} : '',
+                         userId=${usuario} ? ${usuario.getId()} : '',
+                         admin=${usuario} ? ${usuario.isAdministrador()} : '',
+                         arrendador=${usuario} ? ${usuario.isEsArrendador()} : '',
+                         arrendatario=${usuario} ? ${usuario.isEsArrendatario()} : '')"></div>
+</div>
+
+<!-- Si el usuario no está logueado, incluye el Navbar para no logueados -->
+<div th:if="${usuario == null}">
+    <div th:replace="fragments :: navbar_noLogueado"></div>
+</div>
+
+<main style="flex: 1;">
+    <div class="container-fluid">
+        <div class="row mt-3">
+            <div class="col">
+                <h2 style="color: #171a1d; text-align: center; margin-bottom: 10px; margin-top: 30px; font-family: serif;">Administración Cuentas</h2>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col text-end">
+                <a href="/administracion" class="btn btn-link" style="color: #171a1d; font-family: serif;">Volver al Panel</a>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col">
+                <div class="table-responsive table-cuentas-admin">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th style="color: #333; font-family: serif;">ID</th>
+                            <th style="color: #333; font-family: serif;">Número Cuenta</th>
+                            <th style="color: #333; font-family: serif;">Usuario</th>
+                            <th style="color: #333; font-family: serif;">Saldo</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="cuenta: ${cuentas.content}">
+                            <td style="color: #333; font-family: 'Quicksand', sans-serif;" th:text="${cuenta.id}"></td>
+                            <td style="color: #333; font-family: 'Quicksand', sans-serif;" th:text="${cuenta.numeroCuenta}"></td>
+                            <td style="color: #333; font-family: 'Quicksand', sans-serif;" th:text="${cuenta.usuario.apellidos} != null ? ${cuenta.usuario.nombre} + ' ' + ${cuenta.usuario.apellidos} : ${cuenta.usuario.nombre}"></td>
+                            <td style="color: #333; font-family: 'Quicksand', sans-serif;" th:text="${cuenta.saldo} + ' €'"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div th:if="${cantidad != null}" class="d-flex justify-content-center" style="font-family: serif;">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${cuentas.first} ? 'disabled'">
+                        <a class="page-link" th:href="@{/administracion/cuentas(page=${cuentas.number - 1}, size=${cuentas.size})}">Anterior</a>
+                    </li>
+                    <li th:each="pageNum : ${#numbers.sequence(0, cuentas.totalPages - 1)}" class="page-item" th:classappend="${pageNum == cuentas.number} ? 'active'">
+                        <a class="page-link" th:href="@{/administracion/cuentas(page=${pageNum}, size=${cuentas.size})}" th:text="${pageNum + 1}">1</a>
+                    </li>
+                    <li class="page-item" th:classappend="${cuentas.last} ? 'disabled'">
+                        <a class="page-link" th:href="@{/administracion/cuentas(page=${cuentas.number + 1}, size=${cuentas.size})}">Siguiente</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</main>
+
+<div th:replace="fragments :: footer"></div>
+<div th:replace="fragments::javascript"/>
+</body>
+</html>

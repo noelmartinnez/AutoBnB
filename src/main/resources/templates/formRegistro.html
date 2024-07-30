@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+
+<head th:replace="fragments :: head (titulo='Registro')">
+    <title></title>
+    <!-- Enlace a Bootstrap Stylesheet -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+WyL7Q4q6txlSZq9ubRSfau8UcK7J6h"
+          crossorigin="anonymous"/>
+</head>
+
+<body style="font-family: 'Quicksand', sans-serif;">
+    <!-- Si el usuario está logueado, incluye el Navbar normal -->
+    <div th:if="${usuario != null}">
+        <!-- Recuperamos el objeto "usuarios" que nos pasa el Controller y usamos sus atributos, pasandolos al NavBar -->
+        <div th:replace="fragments :: navbar(userName=${usuario} ? ${usuario.getNombre()} : '',
+                         userId=${usuario} ? ${usuario.getId()} : '',
+                         admin=${usuario} ? ${usuario.isAdministrador()} : '',
+                         arrendador=${usuario} ? ${usuario.isEsArrendador()} : '',
+                         arrendatario=${usuario} ? ${usuario.isEsArrendatario()} : '')"></div>
+    </div>
+
+    <!-- Si el usuario no está logueado, incluye el Navbar para no logueados -->
+    <div th:if="${usuario == null}">
+        <div th:replace="fragments :: navbar_noLogueado"></div>
+    </div>
+
+    <main style="flex: 1;">
+        <div class="container-lg" style="margin-top: 50px;">
+            <div class="row justify-content-center mt-5">
+                <div class="col-md-12">
+                    <h2 style="color: #171a1d; text-align: center; margin-bottom: 30px; font-family: serif">Registro</h2>
+                    <form method="post" th:action="@{/registro}" th:object="${registroData}" class="needs-validation" novalidate enctype="multipart/form-data">
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="eMail" style="color: #333; font-family: 'serif';">Correo electrónico</label>
+                                <input id="eMail" class="form-control" name="eMail" placeholder="Correo electrónico"
+                                       type="email" th:field="*{email}" required/>
+                                <div class="invalid-feedback">
+                                    Por favor, introduce un correo electrónico válido.
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="nombre" style="color: #333; font-family: 'serif';">Nombre</label>
+                                <input id="nombre" class="form-control" name="nombre" placeholder="Nombre" type="text"
+                                       th:field="*{nombre}"/>
+                                <div class="invalid-feedback" id="nombreError">El nombre es obligatorio.</div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="apellidos" style="color: #333; font-family: 'serif';">Apellidos</label>
+                                <input id="apellidos" class="form-control" name="apellidos"
+                                       placeholder="Apellidos" th:field="*{apellidos}"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password" style="color: #333; font-family: 'serif';">Contraseña</label>
+                            <input id="password" class="form-control" name="password" placeholder="Contraseña"
+                                   type="password" th:field="*{password}" required/>
+                            <div class="invalid-feedback">
+                                La contraseña es obligatoria.
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmPassword" style="color: #333; font-family: 'serif';">Confirmar Contraseña</label>
+                            <input id="confirmPassword" class="form-control" name="confirmPassword" placeholder="Confirmar Contraseña"
+                                   type="password" required/>
+                            <div class="invalid-feedback">
+                                Las contraseñas deben coincidir.
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="telefono" style="color: #333; font-family: 'serif';">Teléfono</label>
+                                <input id="telefono" class="form-control" name="telefono"
+                                       placeholder="Teléfono" th:field="*{telefono}"/>
+                                <div class="invalid-feedback">
+                                    El teléfono es obligatorio.
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="dni" style="color: #333; font-family: 'serif';">Dni</label>
+                                <input id="dni" class="form-control" name="dni"
+                                       placeholder="DNI" th:field="*{dni}"/>
+                                <div class="invalid-feedback">
+                                    El DNI es obligatorio.
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="fechaCaducidadDni" style="color: #333; font-family: 'serif';">Fecha caducidad del DNI</label>
+                                <input id="fechaCaducidadDni" class="form-control" name="fechaCaducidadDni"
+                                       type="date" th:field="*{fechaCaducidadDni}"/>
+                                <div class="invalid-feedback">
+                                    La Fecha caducidad del DNI es obligatoria.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="ciudad" style="color: #333; font-family: 'serif';">Ciudad</label>
+                                <input id="ciudad" class="form-control" name="ciudad"
+                                       placeholder="Ciudad" th:field="*{ciudad}"/>
+                                <div class="invalid-feedback">
+                                    La ciudad es obligatoria.
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="direccion" style="color: #333; font-family: 'serif';">Dirección</label>
+                                <input id="direccion" class="form-control" name="direccion"
+                                       placeholder="Dirección" th:field="*{direccion}"/>
+                                <div class="invalid-feedback">
+                                    La dirección es obligatoria.
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="codigoPostal" style="color: #333; font-family: 'serif';">Código Postal</label>
+                                <input id="codigoPostal" class="form-control" name="codigoPostal"
+                                       placeholder="Código Postal" th:field="*{codigoPostal}"/>
+                                <div class="invalid-feedback">
+                                    El código postal es obligatorio.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="fechaCarnetConducir" style="color: #333; font-family: 'serif';">Fecha del carnet de conducir</label>
+                                <input id="fechaCarnetConducir" class="form-control" name="fechaCarnetConducir"
+                                       type="date" th:field="*{fechaCarnetConducir}"/>
+                                <div class="invalid-feedback">
+                                    La Fecha del carnet de conducir es obligatoria.
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="numeroCuenta" style="color: #333; font-family: 'serif';">Número de cuenta</label>
+                                <input id="numeroCuenta" class="form-control" name="numeroCuenta"
+                                       placeholder="Número de cuenta" th:field="*{numeroCuenta}"/>
+                                <div class="invalid-feedback">
+                                    El número de cuenta es obligatorio.
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="imagen" style="font-family: serif">Imagen de perfil</label>
+                                <input type="file" class="form-control-file" id="imagen" name="imagen" accept="image/jpeg,image/jpg">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <button type="submit" class="btn btn-primary" style="background-color: #171a1d; border-color: #171a1d; color: #fff; font-family: serif; width: 350px;">Registro</button>
+                            </div>
+                        </div>
+                        <p class="text-center mt-3" style="font-family: serif"><a href="/login" class="btn btn-link" style="color: #171a1d;">Ir a login</a></p>
+                    </form>
+
+                    <div id="errorDiv" th:object="${registroData}">
+                        <ul id="errorUlDiv" th:if="${#fields.hasErrors('*')}" class="alert alert-danger" style="font-family: 'Quicksand', sans-serif;">
+                            <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                        </ul>
+                    </div>
+                    <ul id="errorUl" th:if="${error != null}" class="alert alert-danger" style="font-family: 'Quicksand', sans-serif;">
+                        <li th:text="${error}"></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="fragments :: footer"></div>
+    <div th:replace="fragments::javascript"></div>
+
+    <script>
+        window.onload = function() {
+            var errorDiv = document.getElementById('errorDiv');
+            if (errorDiv) {
+                setTimeout(function() {
+                    errorDiv.style.display = 'none';
+                }, 5000);
+            }
+        };
+    </script>
+    <script>
+        window.onload = function() {
+            var errorUl = document.getElementById('errorUl');
+            if (errorUl) {
+                setTimeout(function() {
+                    errorUl.style.display = 'none';
+                }, 5000);
+            }
+        };
+    </script>
+    <script>
+        window.onload = function() {
+            var errorUlDiv = document.getElementById('errorUlDiv');
+            if (errorUlDiv) {
+                setTimeout(function() {
+                    errorUlDiv.style.display = 'none';
+                }, 5000);
+            }
+        };
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var form = document.querySelector("form.needs-validation");
+            form.addEventListener("submit", function(event) {
+                var password = document.getElementById("password").value;
+                var confirmPassword = document.getElementById("confirmPassword").value;
+                if (password !== confirmPassword) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    alert("Las contraseñas no coinciden. Por favor, inténtalo de nuevo.");
+                    document.getElementById("confirmPassword").classList.add("is-invalid");
+                } else {
+                    document.getElementById("confirmPassword").classList.remove("is-invalid");
+                }
+            }, false);
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            var nombreInput = document.getElementById('nombre');
+
+            nombreInput.addEventListener('input', function() {
+                var valorInvalido = /[<>\/]/; // Expresión regular para detectar caracteres no permitidos
+                if (valorInvalido.test(nombreInput.value)) {
+                    nombreInput.classList.add('is-invalid');
+                    document.getElementById('nombreError').textContent = 'No se permiten los caracteres <, > o /';
+                } else {
+                    nombreInput.classList.remove('is-invalid');
+                    document.getElementById('nombreError').textContent = '';
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

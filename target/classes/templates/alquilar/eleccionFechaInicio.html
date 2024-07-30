@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Eleccion Fecha Inicio')"></head>
+
+<body>
+<div th:if="${usuario != null}">
+    <div th:replace="fragments :: navbar(userName=${usuario} ? ${usuario.getNombre()} : '',
+                         userId=${usuario} ? ${usuario.getId()} : '',
+                         admin=${usuario} ? ${usuario.isAdministrador()} : '',
+                         arrendador=${usuario} ? ${usuario.isEsArrendador()} : '',
+                         arrendatario=${usuario} ? ${usuario.isEsArrendatario()} : '')"></div>
+</div>
+
+<div th:if="${usuario == null}">
+    <div th:replace="fragments :: navbar_noLogueado"></div>
+</div>
+
+<main style="margin: 10px;">
+    <p class="text-center mt-3" style="font-family: serif">
+        <a href="#" th:href="${referer != null ? referer : '/home'}" class="btn btn-link" style="color: #171a1d;">Volver</a>
+    </p>
+    <div th:if="${error != null}" id="errorDiv" class="alert alert-danger" style="max-width: 500px; margin-left: auto; margin-right: auto; display: block; font-family: 'Quicksand', sans-serif">
+        <p th:text="${error}"></p>
+    </div>
+    <div class="container" style="font-family: serif">
+        <div id='calendar' class="table-responsive" th:data-vehiculo-id="${vehiculo.id}" style="max-width: 1000px; max-height: 1000px; margin: auto;"></div>
+    </div>
+    <div style="text-align: center; font-family: serif">
+        <form id="fechaInicioForm" th:action="@{/alquilar/{vehiculoId}/guardarFechaInicial (vehiculoId=${vehiculo.id})}" method="get">
+            <input type="hidden" id="fechaInicial" name="fechaInicial"/>
+            <input type="submit" value="Seleccionar" style="margin-top: 10px; width: 20%; padding: 10px; background-color: #171a1d; color: white; border: none; cursor: pointer;"/>
+        </form>
+    </div>
+</main>
+
+<div th:replace="fragments :: footer"></div>
+<div th:replace="fragments::javascript"/>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var vehiculoId = calendarEl.getAttribute('data-vehiculo-id');
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            timeZone: 'UTC',
+            themeSystem: 'bootstrap5',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth'
+            },
+            weekNumbers: false,
+            dayMaxEvents: true,
+            events: '/api/alquileres/' + vehiculoId,
+
+            dateClick: function(info) {
+                anadirSeleccionACalendario(info.dateStr, calendar);
+            }
+        });
+
+        calendar.render();
+    });
+
+    function anadirSeleccionACalendario(fecha, calendar) {
+        // Primero, eliminar cualquier selección anterior si existe
+        var eventos = calendar.getEvents();
+        var fechaSeleccionada = new Date(fecha);
+        fechaSeleccionada.setHours(0, 0, 0, 0); // Asegurarse de que la comparación sea solo por fecha, no por hora
+        var fechaOcupada = false;
+
+        eventos.forEach(function(event) {
+            var eventStart = new Date(event.start);
+            var eventEnd = new Date(event.end);
+            eventStart.setHours(0, 0, 0, 0);
+            eventEnd.setHours(0, 0, 0, 0);
+
+            if (eventStart <= fechaSeleccionada && fechaSeleccionada < eventEnd) {
+                fechaOcupada = true; // La fecha está ocupada si está entre las fechas de inicio y fin del evento
+            }
+            if (event.id === 'seleccion') {
+                event.remove(); // Elimina la selección anterior
+            }
+        });
+
+        // Comprobar si la fecha seleccionada está ocupada
+        if (fechaOcupada) {
+            alert('Esta fecha ya está reservada. Por favor, seleccione otra fecha.');
+            return; // No permite seleccionar la fecha y termina la función
+        }
+
+        // Añadir nueva selección al calendario si la fecha no está ocupada
+        calendar.addEvent({
+            id: 'seleccion',
+            title: 'Fecha Inicial',
+            start: fecha,
+            allDay: true,
+            color: '#ff9f89' // Puedes personalizar el color aquí
+        });
+
+        // Actualiza el campo oculto del formulario con la fecha seleccionada
+        document.getElementById('fechaInicial').value = fecha;
+    }
+
+    document.getElementById('fechaInicioForm').onsubmit = function() {
+        if (!document.getElementById('fechaInicial').value) {
+            alert('Por favor, seleccione una fecha antes de continuar.');
+            return false; // Previene la sumisión del formulario
+        }
+        return true;
+    };
+</script>
+
+<script>
+    window.onload = function() {
+        var errorDiv = document.getElementById('errorDiv');
+        if (errorDiv) {
+            setTimeout(function() {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+    };
+</script>
+
+</body>
+</html>

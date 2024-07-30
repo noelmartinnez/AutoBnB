@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Historial Alquileres Arrendador')"></head>
+
+<body style="font-family: 'Quicksand', sans-serif;">
+<!-- Si el usuario está logueado, incluye el Navbar normal -->
+<div th:if="${usuario != null}">
+    <!-- Recuperamos el objeto "usuarios" que nos pasa el Controller y usamos sus atributos, pasandolos al NavBar -->
+    <div th:replace="fragments :: navbar(userName=${usuario} ? ${usuario.getNombre()} : '',
+                         userId=${usuario} ? ${usuario.getId()} : '',
+                         admin=${usuario} ? ${usuario.isAdministrador()} : '',
+                         arrendador=${usuario} ? ${usuario.isEsArrendador()} : '',
+                         arrendatario=${usuario} ? ${usuario.isEsArrendatario()} : '')"></div>
+</div>
+
+<!-- Si el usuario no está logueado, incluye el Navbar para no logueados -->
+<div th:if="${usuario == null}">
+    <div th:replace="fragments :: navbar_noLogueado"></div>
+</div>
+
+<main style="flex: 1;">
+    <div class="container-fluid">
+        <div class="row mt-3">
+            <div class="col">
+                <h2 style="color: #171a1d; text-align: center; margin-bottom: 10px; margin-top: 30px; font-family: serif">Historial de Alquileres</h2>
+            </div>
+        </div>
+
+        <p class="text-center mt-3"><a th:href="@{'/perfil/' + ${usuario.id} + '/vehiculos-alquilados'}" class="btn btn-link" style="color: #171a1d; font-family: serif">Volver al listado</a></p>
+
+        <div class="row mt-3">
+            <div class="col">
+                <div class="table-responsive table-alquileres-usuario">
+                    <table class="table table-striped">
+                        <thead>
+
+                        <tr style="font-family: serif">
+                            <th style="color: #333;">Vehículo</th>
+                            <th style="color: #333;">Fecha Entrega</th>
+                            <th style="color: #333;">Fecha Devolución</th>
+                            <th style="color: #333;">Días Alquilado</th>
+                            <th style="color: #333;">Litros Combustible</th>
+                            <th style="color: #333;">Precio Final</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="alquiler: ${alquileres}">
+                            <td style="color: #333; font-family: 'Quicksand', sans-serif;" th:text="${alquiler.vehiculo.marca.nombre} + ' ' + ${alquiler.vehiculo.modelo.nombre}"></td>
+                            <td style="color: #333; font-family: 'Quicksand', sans-serif;" th:text="${alquiler.fechaEntrega}"></td>
+                            <td style="color: #333; font-family: 'Quicksand', sans-serif;" th:text="${alquiler.fechaDevolucion}"></td>
+                            <td style="color: #333; font-family: 'Quicksand', sans-serif;" th:text="${alquiler.litrosCombustible == null || alquiler.litrosCombustible <= 0} ? ${diasDeAlquiler[alquiler.id]} : '-'"></td>
+                            <td style="color: #333; font-family: 'Quicksand', sans-serif;" th:text="${alquiler.litrosCombustible != null && alquiler.litrosCombustible > 0} ? ${alquiler.litrosCombustible} : '-'"></td>
+                            <td style="color: #333; font-family: 'Quicksand', sans-serif;" th:text="${alquiler.precioFinal} + ' €'"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="fragments :: footer"></div>
+<div th:replace="fragments::javascript"/>
+</body>
+</html>

@@ -1,0 +1,28 @@
+/* Estilos base */
+.catalogo-vehiculos {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-reset, .btn-filtrar, .input-busqueda,
+.select-marca, .select-categoria, .select-ciudad,
+.input-precio-min, .input-precio-max {
+    padding: 8px;
+    font-size: 14px;
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+    .catalogo-vehiculos {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn-reset, .btn-filtrar, .input-busqueda,
+    .select-marca, .select-categoria, .select-ciudad,
+    .input-precio-min, .input-precio-max {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+}
